@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>char-lcd test</title>
+    <script src="javascript/char-lcd.js"></script>
+    <link rel='stylesheet' href='css/styles-min.css'>
+</head>
+
+<body>
+    <h1>LCD test view</h1>
+    <div id='global_settings' class="card">
+        <div>
+            Rows: <input type="number" id="rows" value="2" min="1" max="16"> 
+        </div>
+        <div>
+            Columns: <input type="number" id="columns" value="16" min="8" max="32">
+        </div>
+        <div id="color">
+            Color CLD background: 
+            <select id="lcd_color">
+                <option value="#fe8">blue</option>
+                <option value="#fe8">green-yellow</option>
+            </select>
+        </div>
+    </div>
+    <div>
+        <div id=lcd0></div>
+        <p />
+        <div id=lcd></div>
+        <p />
+        <div id=lcd1></div>
+        <p />
+        <div id=lcd2></div>
+        <p />
+        <div id=lcd3></div>
+        <p />
+        <div id=lcd4></div>
+    </div>
+
+    <script>
+        let lcd = new CharLCD({ at: 'lcd0', rows: 2, cols: 16, rom: 'eu' });
+        lcd.text(0, 0, "23:22      -OFF-");
+        lcd.text(1, 0, "_192.168.0.104  ");
+
+        lcd = new CharLCD({ at: 'lcd', rows: 2, cols: 16, rom: 'eu' });
+        lcd.text(0, 0, "23:22      -OFF-");
+        lcd.text(1, 0, "Set:35°C  t:22C°");
+
+        let lcd1 = new CharLCD({ at: 'lcd1', rows: 2, cols: 16, rom: 'eu' });
+        lcd1.text(0, 0, "23:22     »700Wt");
+        lcd1.text(1, 0, "Set:35°C  t:22C°");
+
+        let lcd2 = new CharLCD({ at: 'lcd2', rows: 2, cols: 16, rom: 'eu' });
+        lcd2.text(0, 0, "23:22    »2000Wt");
+        lcd2.text(1, 0, "Set:35°C  t:22C°");
+
+        let lcd3 = new CharLCD({ at: 'lcd3', rows: 2, cols: 16, rom: 'eu' });
+        lcd3.text(0, 0, "23:22   SCHEDULE");
+        lcd3.text(1, 0, "ON:06:00  t:8C°");
+
+        let lcd4 = new CharLCD({ at: 'lcd4', rows: 2, cols: 16, rom: 'eu' });
+        lcd4.text(0, 0, "23:22   SCHEDULE");
+        lcd4.text(1, 0, "OFF:07:00 t:36C°");
+
+    </script>
+
+</body>
+
+</html>
