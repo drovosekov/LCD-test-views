@@ -22,9 +22,15 @@
             settings</label>
         <input type='radio' name='m_test'><label for='m_test' class='button' onclick="selMenu('tests')">Tests</label>
     </div>
-
+ 
     <div id="content" style="display: flex;" class="c_cont">
         <div id="full_page" class="card">
+            <div>
+                <select id="full_view_cp" onchange="selFullViewCP()">
+                    <option value="jp">Japan codepage</option>
+                    <option value="eu" selected>English codepage</option>
+                </select>
+            </div>
             <div>
                 <span id='lcd0'></span>
                 <span id='lcd1'></span>
@@ -32,12 +38,6 @@
             <div>
                 <span id='lcdv'></span>
                 <span id='full_view_lcd'></span>
-            </div>
-            <div>
-                <select id="full_view_cp" onchange="selFullViewCP()">
-                    <option value="jp">Japan codepage</option>
-                    <option value="eu" selected>English codepage</option>
-                </select>
             </div>
         </div>
 
