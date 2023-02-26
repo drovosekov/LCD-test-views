@@ -15,7 +15,9 @@ var full_view_lcd;
 var selMenu = (id) => {
     ["full_page", "global_settings", "tests"].forEach(element => {
         $sd(element, 0);
+        $ch("m_" + element, 0);
     });
+    $ch("m_" + id, 1);
     $sd(id, 1);
 }
 

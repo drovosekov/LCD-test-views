@@ -15,12 +15,12 @@
     <h1>LCD test view</h1>
     <!-- menu -->
     <div class='menu c-flex' id='menu'>
-        <input type='radio' name='m_info'><label for='m_info' class='button' onclick="selMenu('full_page')">Full
+        <input type='radio' name='m_full_page' checked><label for='m_full_page' class='button' onclick="selMenu('full_page')">Full
             view</label>
-        <input type='radio' name='m_settings'><label for='m_settings' class='button'
+        <input type='radio' name='m_global_settings'><label for='m_global_settings' class='button'
             onclick="selMenu('global_settings')">Global
             settings</label>
-        <input type='radio' name='m_test'><label for='m_test' class='button' onclick="selMenu('tests')">Tests</label>
+        <input type='radio' name='m_tests'><label for='m_tests' class='button' onclick="selMenu('tests')">Tests</label>
     </div>
  
     <div id="content" style="display: flex;" class="c_cont">
@@ -73,6 +73,8 @@
                     <span class="l">CLD background:</span>
                     <span class="r">
                         <select id="lcd_bg_color" onchange="selFullViewCP()">
+                            <option value="#D5D9E0">while</option>
+                            <option value="#121212">black</option>
                             <option value="#008">blue</option>
                             <option value="#cd2">green-yellow</option>
                         </select>
@@ -84,6 +86,7 @@
                         <select id="lcd_text_color" onchange="selFullViewCP()">
                             <option value="#fe8">light</option>
                             <option value="#143">dark</option>
+                            <option value="#FDCB2C">wellow</option>
                         </select>
                     </span>
                 </div>
