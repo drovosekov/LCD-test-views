@@ -1,4 +1,4 @@
-$card_width: 360px;
+$card_width: 450px;
 
 html {
     font-family: Helvetica;
@@ -53,9 +53,12 @@ span.l {
 #content {
     padding: 0;
     width: 100%;
-    justify-content: center;
+    justify-content:center;
     align-items: center;
+    display: flex;
     .c_cont {
+        justify-content: center;
+        align-items: center;
         border-radius: 5px;
         background-color: #fff;
         width: $card_width;

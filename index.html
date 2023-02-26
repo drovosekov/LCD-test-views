@@ -15,33 +15,36 @@
     <h1>LCD test view</h1>
     <!-- menu -->
     <div class='menu c-flex' id='menu'>
-        <input type='radio' name='m_full_page' checked><label for='m_full_page' class='button' onclick="selMenu('full_page')">Full
+        <input type='radio' name='m_full_page' checked><label for='m_full_page' class='button'
+            onclick="selMenu('full_page')">Full
             view</label>
         <input type='radio' name='m_global_settings'><label for='m_global_settings' class='button'
             onclick="selMenu('global_settings')">Global
             settings</label>
         <input type='radio' name='m_tests'><label for='m_tests' class='button' onclick="selMenu('tests')">Tests</label>
     </div>
- 
-    <div id="content" style="display: flex;" class="c_cont">
-        <div id="full_page" class="card">
-            <div>
-                <select id="full_view_cp" onchange="selFullViewCP()">
-                    <option value="jp">Japan codepage</option>
-                    <option value="eu" selected>English codepage</option>
-                </select>
-            </div>
-            <div>
-                <span id='lcd0'></span>
-                <span id='lcd1'></span>
-            </div>
-            <div>
-                <span id='lcdv'></span>
-                <span id='full_view_lcd'></span>
+
+    <div id="content">
+        <div style="display:flex;" id="full_page" class="c_cont">
+            <div class="card">
+                <div>
+                    <select id="full_view_cp" onchange="selFullViewCP()">
+                        <option value="eu" selected>English codepage</option>
+                        <option value="jp">Japan codepage</option>
+                    </select>
+                </div>
+                <div>
+                    <span id='lcd0'></span>
+                    <span id='lcd1'></span>
+                </div>
+                <div>
+                    <span id='lcdv'></span>
+                    <span id='full_view_lcd'></span>
+                </div>
             </div>
         </div>
 
-        <div id='global_settings' class="c_cont" style='display:none;'>
+        <div id='global_settings' style="display:none;" class="c_cont">
             <h2>Global panel settings</h2>
             <div id="panel_size" class="card">
                 <h3>LCD panel size type</h3>
@@ -65,7 +68,7 @@
                     <span class="l">Break size:</span>
                     <span class="r"><input type="number" id="break_size" value="1" min="0" max="8"
                             onchange="selFullViewCP()"> px</span>
-                </div> 
+                </div>
             </div>
             <div id="color" class="card">
                 <h3>LCD colors</h3>
@@ -93,15 +96,13 @@
             </div>
         </div>
 
-        <div id='tests' class="c_cont" style='display:none;'>
-            <h2></h2>
+        <div id='tests' style='display:none;' class="c_cont">
+            <h2>Test views</h2>
             <div class="card">
                 <div id=lcd0></div>
             </div>
         </div>
-
     </div>
-
 
 </body>
 
