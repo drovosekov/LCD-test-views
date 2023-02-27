@@ -19,7 +19,7 @@
   function CharLCD(obj) {
     var _ = {
       font: {},
-      rom: _jp,
+      rom: _eu,
       arg: {
         rows: 2,
         cols: 16,
@@ -27,7 +27,7 @@
         brk: 1,
         off: '#cd2',
         on: '#143',
-        large: 0
+        large: false
       }
     };
 

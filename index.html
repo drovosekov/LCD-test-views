@@ -4,11 +4,12 @@
 
 <head>
     <title>LCD test view</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,initial-scale=0.8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <script src="javascript/char-lcd.js"></script>
-    <script src="javascript/test-min.js"></script>
+    <script src="javascript/test.js"></script>
     <link rel='stylesheet' href='css/styles-min.css'>
+	<link rel="shortcut icon" type="image/icon" href="img/favicon.ico" id="favicon" />
 </head>
 
 <body>
@@ -21,7 +22,7 @@
         <input type='radio' name='m_global_settings'><label for='m_global_settings' class='button'
             onclick="selMenu('global_settings')">Global
             settings</label>
-        <input type='radio' name='m_tests'><label for='m_tests' class='button' onclick="selMenu('tests')">Tests</label>
+        <input type='radio' name='m_tests'><label for='m_tests' class='button' onclick="selMenu('tests')">LCD tests</label>
     </div>
 
     <div id="content">
@@ -95,29 +96,31 @@
         </div>
 
         <div id='tests' style='display:none;' class="c_cont">
-            <div>
+            <div style="display:flex;padding-top:6px">
                 <span class="r">
                     <h2>Test views</h2>
                 </span>
                 <span class="l">
-                    <input type='button' value='Add panel' onclick='addPanel(this)'>
+                    <input type='button' value='Add panel' onclick='addPanel(this)' />
                 </span>
             </div>
-            <div class="card" id="lcd_0">
+            <div class="card test_panel" id="lcd_0">
                 <div>
                     <span class="r">
-                        <h3 onclick="alert(11)">Panel 1</h3>
+                        <h3 onclick="editPanelName(this)" id="panel_name_0">Panel 1</h3>
                     </span>
                     <span class="l">
-                        <input type='button' class='incr_panel' value='X' onclick='dellPanel(this)' disabled>
+                        <input type='button' class='incr_panel' value='X' onclick='delPanel(this)' disabled />
                     </span>
                 </div>
-                <div id="row_0">
-                    <input type="text" id="row_txt_0" maxlength="16" style="width:(16*8)px" />
-                </div>
-                <div id="row_1">
-                    <input type="text" id="row_txt_1" maxlength="16" />
-                </div>
+				<div id="settings_panel_0" class="block">
+					<div id="row_0">
+						<input type="text" id="row_txt_0" maxlength="16" style="width:185px" class="panel_row" onkeyup="updatePanel(this)" />
+					</div>
+					<div id="row_1">
+						<input type="text" id="row_txt_1" maxlength="16" style="width:185px" class="panel_row" onkeyup="updatePanel(this)" />
+					</div>
+				</div>
                 <div id="panel_0"></div>
             </div>
         </div>

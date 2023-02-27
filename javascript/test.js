@@ -10,7 +10,13 @@ var $v = (id, v) => { if ($(id)) $(id).value = v; else debug(mis + id) }
 var $ch = (id, v) => { if ($(id)) $(id).checked = v ? 'checked' : ''; else debug(mis + id) }
 var $qs = (s) => { return document.querySelectorAll(s) }
 
+const full_view_pixel=3;
+const full_view_brk=1;
 var full_view_lcd;
+var panels_test = {};
+class tPanel {
+
+}
 
 var selMenu = (id) => {
     ["full_page", "global_settings", "tests"].forEach(element => {
@@ -31,6 +37,8 @@ var selFullViewCP = () => {
         rom: $('full_view_cp').value,
         off: $('lcd_bg_color').value,
         on: $('lcd_text_color').value,
+        pix: full_view_pixel,
+        brk: full_view_brk
         // pix: $('px_size').value,
         // brk: $('break_size').value
     });
@@ -43,14 +51,15 @@ var selFullViewCP = () => {
 }
 
 var initFullViews = () => {
-    var lcd0 = new CharLCD({ at: 'lcd0', rows: 1, cols: 1, rom: 'eu', off: '#fff', on: '#f00' });//1 custom symbol panel
-    var lcd1 = new CharLCD({ at: 'lcd1', rows: 1, cols: 16, off: '#fff', on: '#000' });//left horizontal index 
-    var lcdv = new CharLCD({ at: 'lcdv', rows: 16, cols: 1, off: '#fff', on: '#000' });//vertical index 
+    var lcd0 = new CharLCD({ at: 'lcd0', rows: 1, cols: 1, off: '#fff', on: '#f00', pix: full_view_pixel, brk: full_view_brk });//1 custom symbol panel
+    var lcd1 = new CharLCD({ at: 'lcd1', rows: 1, cols: 16, off: '#fff', on: '#000', pix: full_view_pixel, brk: full_view_brk });//left horizontal index 
+    var lcdv = new CharLCD({ at: 'lcdv', rows: 16, cols: 1, off: '#fff', on: '#000', pix: full_view_pixel, brk: full_view_brk });//vertical index 
     full_view_lcd = new CharLCD({
         at: 'full_view_lcd', rows: 16, cols: 16,
         rom: $('full_view_cp').value,
         off: $('lcd_bg_color').value,
-        on: $('lcd_text_color').value
+        on: $('lcd_text_color').value,
+        pix: full_view_pixel, brk: full_view_brk
     });
 
     lcd0.font(0, [0, 10, 21, 17, 10, 4]);//save heart symbol at 0 index
@@ -65,8 +74,58 @@ var initFullViews = () => {
     }
 }
 
+var addPanel = (id, config) => {
+    var panel = new CharLCD({
+        at: 'panel_' + id.toString(),
+        rows: $('rows').value,
+        cols: $('columns').value,
+        rom: $('full_view_cp').value,
+        off: $('lcd_bg_color').value,
+        on: $('lcd_text_color').value,
+        pix: $('px_size').value,
+        brk: $('break_size').value
+    });
+    var namePanel = $("panel_name_" + id).innerHTML;
+    if (!namePanel) namePanel = $n("panel_name_" + id).value;
+    var p = {
+        index: id,
+        name: namePanel,
+        content: [],
+        lcd_panel: panel
+    }
+    //alert(JSON.)
+    panels_test[id] = p;
+}
+
+var updatePanel = (p) => {
+    let val = p.value + " ";
+    panels_test[0].lcd_panel.text(p.id.replace("row_txt_", ""), 0, val);
+    panels_test[0].content = {};
+    var i = 0;
+    while (1) {
+        var row = $("row_txt" + i);
+        if (!row) break;
+        panels_test[0].content[i] = row.value;
+        i++;
+    }
+
+}
+
 var initPanels = () => {
 
+}
+
+var editPanelName = (el) => {
+    let id = el.id;
+    el.parentElement.innerHTML = "<input type='text' onfocusout='renamePanel(this)' value='" + el.innerHTML + "' name='" + id + "'/>";
+    $n(id).focus();
+}
+
+var renamePanel = (el) => {
+    let id = el.name;
+    let val = el.value;
+    el = el.parentElement;
+    el.innerHTML = '<h3 id="' + id + '" onclick="editPanelName(this)">' + val + '</h3>';
 }
 
 var elValues = [
@@ -94,5 +153,6 @@ var loadState = () => {
 window.addEventListener('DOMContentLoaded', () => {
     loadState();
     initFullViews();
-    selMenu("tests");
+    selMenu("tests");//TODO: for debug
+    addPanel(0);
 });
