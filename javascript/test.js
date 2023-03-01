@@ -99,16 +99,8 @@ var addPanel = (id, config) => {
 
 var updatePanel = (p) => {
     let val = p.value + " ";
-    panels_test[0].lcd_panel.text(p.id.replace("row_txt_", ""), 0, val);
-    panels_test[0].content = {};
-    var i = 0;
-    while (1) {
-        var row = $("row_txt" + i);
-        if (!row) break;
-        panels_test[0].content[i] = row.value;
-        i++;
-    }
-
+    panels_test[0].lcd_panel.text(0, 0, val);
+    panels_test[0].content = val; 
 }
 
 var initPanels = () => {
