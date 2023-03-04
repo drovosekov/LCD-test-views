@@ -53,7 +53,7 @@ span.l {
 #content {
     padding: 0;
     width: 100%;
-    justify-content:center;
+    justify-content: center;
     align-items: center;
     display: flex;
     .c_cont {
@@ -115,9 +115,13 @@ span.l {
     margin: 5px;
 }
 
-.lcd_panel div {
-    position: absolute;
-    display: inline-block;
+.lcd_panel {
+        position: relative;
+        display: inline-block;    
+    div {
+        position: absolute;
+        display: inline-block;
+    }
 }
 
 $bg_button_off: #34495e;

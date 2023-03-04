@@ -10,9 +10,8 @@ var $v = (id, v) => { if ($(id)) $(id).value = v; else debug(mis + id) }
 var $ch = (id, v) => { if ($(id)) $(id).checked = v ? 'checked' : ''; else debug(mis + id) }
 var $qs = (s) => { return document.querySelectorAll(s) }
 
-const full_view_pixel=3;
-const full_view_brk=1;
-var full_view_lcd;
+const full_view_pixel = 3;
+const full_view_brk = 1;
 var panels_test = {};
 class tPanel {
 
@@ -30,17 +29,15 @@ var selMenu = (id) => {
 
 var selFullViewCP = () => {
     $h('full_view_lcd', '');
-    full_view_lcd = new CharLCD({
+    var full_view_lcd = new CharLCD({
         at: 'full_view_lcd',
         rows: 16,
         cols: 16,
         rom: $('full_view_cp').value,
         off: $('lcd_bg_color').value,
         on: $('lcd_text_color').value,
-        pix: full_view_pixel,
-        brk: full_view_brk
-        // pix: $('px_size').value,
-        // brk: $('break_size').value
+        pixel_size: full_view_pixel,
+        break_size: full_view_brk
     });
     for (var i = 0; i < 16; i++) {
         for (var j = 0; j < 16; j++) {
@@ -51,27 +48,17 @@ var selFullViewCP = () => {
 }
 
 var initFullViews = () => {
-    var lcd0 = new CharLCD({ at: 'lcd0', rows: 1, cols: 1, off: '#fff', on: '#f00', pix: full_view_pixel, brk: full_view_brk });//1 custom symbol panel
-    var lcd1 = new CharLCD({ at: 'lcd1', rows: 1, cols: 16, off: '#fff', on: '#000', pix: full_view_pixel, brk: full_view_brk });//left horizontal index 
-    var lcdv = new CharLCD({ at: 'lcdv', rows: 16, cols: 1, off: '#fff', on: '#000', pix: full_view_pixel, brk: full_view_brk });//vertical index 
-    full_view_lcd = new CharLCD({
-        at: 'full_view_lcd', rows: 16, cols: 16,
-        rom: $('full_view_cp').value,
-        off: $('lcd_bg_color').value,
-        on: $('lcd_text_color').value,
-        pix: full_view_pixel, brk: full_view_brk
-    });
-
-    lcd0.font(0, [0, 10, 21, 17, 10, 4]);//save heart symbol at 0 index
+    var lcd0 = new CharLCD({ at: 'lcd0', rows: 1, cols: 1, off: '#fff', on: '#f00', pixel_size: full_view_pixel, break_size: full_view_brk });//1 custom symbol panel
+    lcd0.font(0, [0, 10, 21, 17, 10, 4]);   //save heart symbol at 0 index
     lcd0.char(0, 0, String.fromCharCode(0));//draw custom symbol saved at 0 index
 
-    for (var i = 0; i < 16; i++) {
-        lcd1.char(0, i, "0123456789ABCDEF"[i]);
-        lcdv.char(i, 0, "0123456789ABCDEF"[i]);
-        for (var j = 0; j < 16; j++) {
-            full_view_lcd.char(i, j, String.fromCharCode(i * 16 + j));
-        }
-    }
+    var lcd1 = new CharLCD({ at: 'lcd1', rows: 1, cols: 16, off: '#fff', on: '#000', pixel_size: full_view_pixel, break_size: full_view_brk });//left horizontal index 
+    lcd1.text(0, 0, "0123456789ABCDEF");
+
+    var lcdv = new CharLCD({ at: 'lcdv', rows: 16, cols: 1, off: '#fff', on: '#000', pixel_size: full_view_pixel, break_size: full_view_brk });//vertical index 
+    lcdv.text(0, 0, "0\n1\n2\n3\n4\n5\n6\n7\n8\n9\nA\nB\nC\nD\nE\nF");
+
+    selFullViewCP();
 }
 
 var addPanel = (id, config) => {
@@ -100,7 +87,7 @@ var addPanel = (id, config) => {
 var updatePanel = (p) => {
     let val = p.value + " ";
     panels_test[0].lcd_panel.text(0, 0, val);
-    panels_test[0].content = val; 
+    panels_test[0].content = val;
 }
 
 var initPanels = () => {

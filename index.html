@@ -45,33 +45,20 @@
         </div>
 
         <div id='global_settings' style="display:none;" class="c_cont">
-            <h2>Global panel settings</h2>
+            <h2>Global LCD panel settings</h2>
             <div id="panel_size" class="card">
-                <h3>LCD panel size type</h3>
+                <h3>Panel size</h3>
                 <div>
                     <span class="l">Rows:</span>
                     <span class="r"><input type="number" id="rows" value="2" min="1" max="16" onchange="saveState()"></span>
                 </div>
                 <div>
                     <span class="l">Columns:</span>
-                    <span class="r"><input type="number" id="columns" value="16" min="8" max="32" onchange="saveState()"></span>
-                </div>
-            </div>
-            <div id="pixel_size" class="card">
-                <h3>LCD pixel and breaks size</h3>
-                <div>
-                    <span class="l">Pixel size:</span>
-                    <span class="r"><input type="number" id="px_size" value="3" min="1" max="8"
-                            onchange="selFullViewCP()"> px</span>
-                </div>
-                <div>
-                    <span class="l">Break size:</span>
-                    <span class="r"><input type="number" id="break_size" value="1" min="0" max="8"
-                            onchange="selFullViewCP()"> px</span>
+                    <span class="r"><input type="number" id="columns" value="16" min="8" max="16" onchange="saveState()"></span>
                 </div>
             </div>
             <div id="color" class="card">
-                <h3>LCD colors</h3>
+                <h3>Colors</h3>
                 <div>
                     <span class="l">Background:</span>
                     <span class="r">
@@ -91,6 +78,19 @@
                             <option value="#143">dark</option>
                         </select>
                     </span>
+                </div>
+            </div>
+            <div id="pixel_size" class="card">
+                <h3>Pixels and breaks size</h3>
+                <div>
+                    <span class="l">Pixel size:</span>
+                    <span class="r"><input type="number" id="px_size" value="3" min="1" max="8"
+                            onchange="selFullViewCP()"> px</span>
+                </div>
+                <div>
+                    <span class="l">Break size:</span>
+                    <span class="r"><input type="number" id="break_size" value="1" min="0" max="8"
+                            onchange="selFullViewCP()"> px</span>
                 </div>
             </div>
         </div>
