@@ -127,6 +127,12 @@ span.l {
     display: inline-block;
     background: #000;
     padding: 10px 10px 20px 10px;
+    border-radius: 5px;
+}
+
+.panel_row{
+    min-width: 200px;
+    min-height: 50px;
 }
 
 $bg_button_off: #34495e;

@@ -51,7 +51,8 @@ class CharLCD {
 
     var char = (_, r, c, ch) => {
       var x = ch.charCodeAt(0);
-      set(_, r, c, _.font[x] ? _.font[x] : _.rom.font[x]);
+      set(_, r, c, _.font[x] ? _.font[x] : cpList[_.rom].font[x]);
+      // set(_, r, c, _.font[x] ? _.font[x] : _.rom.font[x]);
     }
 
     var text = (_, r, c, str) => {
@@ -60,8 +61,7 @@ class CharLCD {
       for (i = 0; i < str.length; i++) {
         if (str[i] == '\n') {
           c = 0;
-          r++;
-          if (r >= _.arg.rows) return;
+          if (r++ >= _.arg.rows) return;
         }
         else {
           x = str.charCodeAt(i);
@@ -70,19 +70,20 @@ class CharLCD {
             k = str[i] ? str.charCodeAt(i) : 0;
             x = 0x10000 + (x - 0xd800) * 0x400 + (k - 0xdc00);
           }
-          if (c >= _.arg.cols) continue;
-          if (_.rom.cmap[x]) x = _.rom.cmap[x];
+          // if (_.rom.cmap[x]) x = _.rom.cmap[x];
+          if (cpList[_.rom].cmap[x]) x = cpList[_.rom].cmap[x];
           if (x instanceof Array) {
             for (k = 0; k < x.length; k++) {
               char(_, r, c, String.fromCharCode(x[k]));
-              c++;
             }
+            c += x.length;
           }
           else {
             if (x > 255) x = 0x3f;
             char(_, r, c, String.fromCharCode(x));
             c++;
           }
+          if (c >= _.arg.cols) continue;
         }
       }
     }
@@ -115,16 +116,19 @@ class CharLCD {
         else
           _.arg[key] = obj[key];
       }
-      debug(_.rom.name);
+
       if (obj.rom) {
-        if (obj.rom.toString().toLowerCase() == 'eu')
-          _.rom = _eu;
-        else if (obj.rom.toString().toLowerCase() == 'jp')
-          _.rom = _jp;
-      } else
-        _.rom = _eu;
-        
-      debug(_.rom.name);
+        var cpID = obj.rom.toString().toLowerCase();
+        if (cpList[cpID])
+          _.rom = cpID;
+      }
+
+      // if (obj.rom) {
+      //   var cpID = obj.rom.toString().toLowerCase();
+      //   if (cpList[cpID])
+      //     _.rom = cpList[cpID]; 
+      // } else
+      //   _.rom = _eu;
     }
     if (typeof _.arg.at == 'string')
       _.arg.at = document.getElementById(_.arg.at);
@@ -137,7 +141,7 @@ class CharLCD {
   }
 }
 
-////////////////////////////
+
 var _jp = {
   name: "Japan CP",
   font: [
@@ -666,3 +670,9 @@ var _eu = {
     0x1F514: 0x98
   }
 };
+
+////////////////////////////
+var cpList = {
+  "jp": _jp,
+  "eu": _eu
+}

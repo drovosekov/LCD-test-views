@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=0.8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <script src="javascript/char-lcd.js"></script>
-    <script src="javascript/test-min.js"></script>
+    <script src="javascript/test.js"></script>
     <link rel='stylesheet' href='css/styles-min.css'>
     <link rel="shortcut icon" type="image/icon" href="img/favicon.ico" id="favicon" />
 </head>
@@ -85,6 +85,10 @@
                     <span class="l">Show display boder:</span>
                     <span class="r"><input type="checkbox" id="lcd_border" onchange="saveState()"></span>
                 </div>
+                <div>
+                    <span class="l">Large display:</span>
+                    <span class="r"><input type="checkbox" id="lcd_large" onchange="saveState()"></span>
+                </div>
             </div>
             <div id="color" class="card">
                 <h3>Colors</h3>
@@ -125,7 +129,7 @@
         </div>
 
         <div id='tests' style='display:none;' class="c_cont">
-            <div style="display:flex;padding-top:6px">
+            <div style="display:flex;padding:6px">
                 <span class="r">
                     <h2>Test views</h2>
                 </span>
@@ -133,26 +137,37 @@
                     <input type='button' value='Add panel' onclick='addPanel(this)' />
                 </span>
             </div>
-            <div class="card test_panel" id="lcd_0">
-                <div>
-                    <span class="r">
-                        <h3 onclick="editPanelName(this)" id="panel_name_0">Panel 1</h3>
-                    </span>
-                    <span class="l">
-                        <input type='button' class='incr_panel' value='X' onclick='delPanel(this)' disabled />
-                    </span>
-                </div>
-                <div id="settings_panel_0" class="block">
-                    <div id="div_rows_text">
-                        <textarea id="row_txt" rows="2" cols="16" style="width:185px" class="panel_row"
-                            onkeyup="updatePanel(this)"></textarea>
+
+            <div id="panels" class="block">
+                <div class="card test_panel" id="lcd_0">
+                    <div>
+                        <span class="r">
+                            <h3 onclick="editPanelName(this)" id="panel_name_0">Panel 1</h3>
+                        </span>
+                        <span class="l">
+                            <input type='button' class='incr_panel' value='V' onclick='pastPanelConfig(this)'
+                                title="Past panel config" />
+                            <input type='button' class='incr_panel' value='^' onclick='copyPanelConfig(this)'
+                                title="Copy panel config" />
+                            <input type='button' class='incr_panel' value='_' onclick='collapsePanel(this)'
+                                title="Collapse panel" />
+                            <input type='button' class='incr_panel' value='X' onclick='delPanel(this)'
+                                title="Delete panel" />
+                        </span>
                     </div>
+                    <div id="settings_panel_0">
+                        <div id="div_rows_text">
+                            <textarea id="row_txt_0" rows="2" cols="16" class="panel_row"
+                                onkeyup="updatePanel(this, 0)"></textarea>
+                        </div>
+                    </div>
+                    <span class="r"></span>
+                    <span class="lcd_border">
+                        <div id="panel_0"></div>
+                    </span>
+                    <span class="l"></span>
                 </div>
-                <span class="r"></span>
-                <span class="lcd_border" id="lcd_border_0">
-                    <div id="panel_0"></div>
-                </span>
-                <span class="l"></span>
+
             </div>
         </div>
     </div>
