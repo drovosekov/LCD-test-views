@@ -9,7 +9,7 @@
     <script src="javascript/char-lcd.js"></script>
     <script src="javascript/test-min.js"></script>
     <link rel='stylesheet' href='css/styles-min.css'>
-	<link rel="shortcut icon" type="image/icon" href="img/favicon.ico" id="favicon" />
+    <link rel="shortcut icon" type="image/icon" href="img/favicon.ico" id="favicon" />
 </head>
 
 <body>
@@ -22,17 +22,21 @@
         <input type='radio' name='m_global_settings'><label for='m_global_settings' class='button'
             onclick="selMenu('global_settings')">Global
             settings</label>
-        <input type='radio' name='m_tests'><label for='m_tests' class='button' onclick="selMenu('tests')">LCD tests</label>
+        <input type='radio' name='m_tests'><label for='m_tests' class='button' onclick="selMenu('tests')">LCD
+            tests</label>
     </div>
 
     <div id="content">
-        <div style="display:block;" id="full_page" class="c_cont">
-            <h2>Full display codepage</h2>
+        <div class="card" style="display:block;" id="full_page" class="c_cont">
             <div>
-                <select id="full_view_cp" onchange="selFullViewCP()">
-                    <option value="eu" selected>English codepage</option>
-                    <option value="jp">Japan codepage</option>
-                </select>
+                <span class="l">Full display codepage</span>
+                <span class="r">
+                    <select id="full_view_cp" onchange="selFullViewCP()">
+                        <option value="eu" selected>English</option>
+                        <option value="jp">Japan</option>
+                        <option value="ru">Russian</option>
+                    </select>
+                </span>
             </div>
             <div>
                 <span id='lcd0'></span>
@@ -49,12 +53,37 @@
             <div id="panel_size" class="card">
                 <h3>Panel size</h3>
                 <div>
-                    <span class="l">Rows:</span>
-                    <span class="r"><input type="number" id="rows" value="2" min="1" max="16" onchange="saveState()"></span>
+                    <span class="l">Standart types:</span>
+                    <span class="r">
+                        <select id="lcd_sizes" onchange="selStndLCDSize(this.value)">
+                            <option value="---" disabled selected="selected">Custom</option>
+                            <option value="1x8xx3">1x8</option>
+                            <option value="2x8x3">2x8</option>
+                            <option value="1x16x3">1x16</option>
+                            <option value="2x16x3">2x16</option>
+                            <option value="4x16x3">4x16</option>
+                            <option value="1x24x3">1x20</option>
+                            <option value="2x24x3">2x20</option>
+                            <option value="4x20x3">4x20</option>
+                            <option value="2x24x2">2x24</option>
+                            <option value="2x40x2">2x40</option>
+                            <option value="4x40x2">4x40</option>
+                        </select>
+                    </span>
                 </div>
                 <div>
-                    <span class="l">Columns:</span>
-                    <span class="r"><input type="number" id="columns" value="16" min="8" max="16" onchange="saveState()"></span>
+                    <span class="l">Custom rows:</span>
+                    <span class="r"><input type="number" id="rows" value="2" min="1" max="8"
+                            onchange="saveState()"></span>
+                </div>
+                <div>
+                    <span class="l">Custom columns:</span>
+                    <span class="r"><input type="number" id="columns" value="16" min="8" max="40"
+                            onchange="saveState()"></span>
+                </div>
+                <div>
+                    <span class="l">Show display boder:</span>
+                    <span class="r"><input type="checkbox" id="lcd_border" onchange="saveState()"></span>
                 </div>
             </div>
             <div id="color" class="card">
@@ -113,12 +142,17 @@
                         <input type='button' class='incr_panel' value='X' onclick='delPanel(this)' disabled />
                     </span>
                 </div>
-				<div id="settings_panel_0" class="block">
-					<div id="div_rows_text">
-						<textarea id="row_txt" rows="2" cols="16" style="width:185px" class="panel_row" onkeyup="updatePanel(this)"></textarea>
-					</div>
-				</div>
-                <div id="panel_0"></div>
+                <div id="settings_panel_0" class="block">
+                    <div id="div_rows_text">
+                        <textarea id="row_txt" rows="2" cols="16" style="width:185px" class="panel_row"
+                            onkeyup="updatePanel(this)"></textarea>
+                    </div>
+                </div>
+                <span class="r"></span>
+                <span class="lcd_border" id="lcd_border_0">
+                    <div id="panel_0"></div>
+                </span>
+                <span class="l"></span>
             </div>
         </div>
     </div>

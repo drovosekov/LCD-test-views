@@ -1,13 +1,15 @@
-var debug = (v) => { console.log(v) }
+const mis = "missed id: ";
+var debug = (v) => { window.console.log(v) }
 var $$ = (id) => { return document.getElementById(id) }
 var $n = (id) => { return document.getElementsByName(id)[0] }
 var $ = (id) => { if ($$(id)) return $$(id); else return $n(id) }
+var $sbg = (id, color) => { if ($(id)) $(id).style.backgroundColor = color; else debug(mis + id) }
 var $sc = (id, color) => { if ($(id)) $(id).style.color = color; else debug(mis + id) }
 var $sd = (id, v, st = 'block') => { if ($(id)) $(id).style.display = v ? st : 'none'; else debug(mis + id) }
 var $tt = (id) => { if ($(id)) return $(id).innerText; else debug(mis + id) }
 var $h = (id, v) => { if ($(id)) $(id).innerHTML = v; else debug(mis + id) }
 var $v = (id, v) => { if ($(id)) $(id).value = v; else debug(mis + id) }
-var $ch = (id, v) => { if ($(id)) $(id).checked = v ? 'checked' : ''; else debug(mis + id) }
+var $ch = (id, v) => { if ($(id)) $(id).checked = (v.toString() == 'true' || v == 1) ? 'checked' : ''; else debug(mis + id) }
 var $qs = (s) => { return document.querySelectorAll(s) }
 
 const full_view_pixel = 3;
@@ -24,6 +26,14 @@ var selMenu = (id) => {
     });
     $ch("m_" + id, 1);
     $sd(id, 1);
+    saveState(id);
+}
+
+var selStndLCDSize = (val) => {
+    var v = val.split('x');
+    $('rows').value = v[0];
+    $('columns').value = v[1];
+    $('px_size').value = v[2];
     saveState();
 }
 
@@ -61,7 +71,8 @@ var initFullViews = () => {
     selFullViewCP();
 }
 
-var addPanel = (id, config) => {
+var addPanel = (id, config) => { 
+    $sbg('lcd_border_' + id.toString(), $('lcd_border').checked ? "#000" : "#fff");
     var panel = new CharLCD({
         at: 'panel_' + id.toString(),
         rows: $('rows').value,
@@ -69,8 +80,8 @@ var addPanel = (id, config) => {
         rom: $('full_view_cp').value,
         off: $('lcd_bg_color').value,
         on: $('lcd_text_color').value,
-        pix: $('px_size').value,
-        brk: $('break_size').value
+        pixel_size: $('px_size').value,
+        break_size: $('break_size').value
     });
     var namePanel = $("panel_name_" + id).innerHTML;
     if (!namePanel) namePanel = $n("panel_name_" + id).value;
@@ -115,23 +126,36 @@ var elValues = [
     { name: 'break_size', defvalue: 1 },
     { name: 'lcd_bg_color', defvalue: '#cd2' },
     { name: 'lcd_text_color', defvalue: '#143' },
+    { name: 'lcd_border', checked: 1 },
 ];
 
-var saveState = () => {
+var saveState = (selPage) => {
     elValues.forEach(element => {
-        localStorage.setItem('LCDtest_' + element.name, $(element.name).value);
+        if ($(element.name).type == 'checkbox')
+            localStorage.setItem('LCDtest_' + element.name, $(element.name).checked);
+        else
+            localStorage.setItem('LCDtest_' + element.name, $(element.name).value);
     });
+    if (selPage)
+        localStorage.setItem('SelPage', selPage);
 }
 
 var loadState = () => {
     elValues.forEach(element => {
-        $v(element.name, localStorage.getItem('LCDtest_' + element.name) || element.defvalue)
+        if ($(element.name).type == 'checkbox') {
+            debug(element.name + " : " + localStorage.getItem('LCDtest_' + element.name));
+            $ch(element.name, localStorage.getItem('LCDtest_' + element.name))
+        }
+        else
+            $v(element.name, localStorage.getItem('LCDtest_' + element.name) || element.defvalue)
     });
+    $('lcd_sizes').value = $('rows').value + "x" + $('columns').value + "x" + $('px_size').value;
+    selMenu(localStorage.getItem('SelPage') || 'full_page');
 }
 
 window.addEventListener('DOMContentLoaded', () => {
     loadState();
     initFullViews();
-    selMenu("tests");//TODO: for debug
+    // selMenu("tests");//TODO: for debug
     addPanel(0);
 });
