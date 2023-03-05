@@ -62,6 +62,7 @@ span.l {
         border-radius: 5px;
         background-color: #fff;
         width: $card_width;
+        min-width: 350px;
         -webkit-animation-name: fadeIn;
         animation-name: fadeIn;
         -webkit-animation-duration: 1s;
