@@ -49,7 +49,13 @@
         </div>
 
         <div id='global_settings' style="display:none;" class="c_cont">
-            <h2>Global LCD panel settings</h2>
+            <div style="display:flex;padding:6px">
+                <h2 style="width:80%">Global LCD panel settings</h2>
+                <span>
+                    <input type='button' value='▼' onclick='pastPanelConfig("global")' title="Past panel config" />
+                    <input type='button' value='▲' onclick='copyPanelConfig("global")' title="Copy panel config" />
+                </span>
+            </div>
             <div id="panel_size" class="card">
                 <h3>Panel size</h3>
                 <div>
@@ -134,39 +140,38 @@
                     <h2>Test views</h2>
                 </span>
                 <span class="l">
-                    <input type='button' value='Add panel' onclick='addPanel(this)' />
+                    <input type='button' value='Add panel' onclick='addPanel()' />
                 </span>
             </div>
 
             <div id="panels" class="block">
-                <div class="card test_panel" id="lcd_0">
+                <!--<div class="card test_panel" id="lcd_0">
                     <div>
                         <span class="r">
                             <h3 onclick="editPanelName(this)" id="panel_name_0">Panel 1</h3>
                         </span>
                         <span class="l">
-                            <input type='button' class='incr_panel' value='V' onclick='pastPanelConfig(this)'
+                            <input type='button' value='▼' onclick='pastPanelConfig(this)'
                                 title="Past panel config" />
-                            <input type='button' class='incr_panel' value='^' onclick='copyPanelConfig(this)'
+                            <input type='button' value='▲' onclick='copyPanelConfig(this)'
                                 title="Copy panel config" />
-                            <input type='button' class='incr_panel' value='_' onclick='collapsePanel(this)'
+                            <input type='button' value='_' onclick='collapsePanel(this)'
                                 title="Collapse panel" />
-                            <input type='button' class='incr_panel' value='X' onclick='delPanel(this)'
+                            <input type='button' value='X' onclick='delPanel(this)'
                                 title="Delete panel" />
                         </span>
                     </div>
-                    <div id="settings_panel_0">
-                        <div id="div_rows_text">
-                            <textarea id="row_txt_0" rows="2" cols="16" class="panel_row"
-                                onkeyup="updatePanel(this, 0)"></textarea>
-                        </div>
-                    </div>
-                    <span class="r"></span>
-                    <span class="lcd_border">
-                        <div id="panel_0"></div>
-                    </span>
-                    <span class="l"></span>
-                </div>
+                    <div id="panel_area_0" class="block">
+						<div>
+							<textarea rows="2" cols="16" class="panel_row" onkeyup="updatePanel(this)"></textarea>
+						</div>
+						<span class="r"></span>
+						<span class="lcd_border">
+							<div id="panel_0"></div>
+						</span>
+						<span class="l"></span>
+					</div>
+                </div>//-->
 
             </div>
         </div>
