@@ -53,7 +53,7 @@ const panel_markup =
 const full_view_pixel = 3;
 const full_view_brk = 1;
 
-var copyedPanelConfig = "";
+var copiedPanelConfig = "";
 var panels_config = {};
 var panels_obj = {};
 
@@ -155,8 +155,8 @@ var addPanel = (config) => {
             large: $('lcd_large').checked,
             content: ""
         }
-        debug(config);
     }
+    
     let newPanel = document.createElement('div');
     newPanel.className = "card test_panel";
     newPanel.id = "lcd_" + config.id;
@@ -203,12 +203,12 @@ var copyPanelConfig = (el) => {
             break_size: $('break_size').value,
             large: $('lcd_large').checked
         }
-        copyedPanelConfig = config;
-        alert("Global settings saved at inner variable. Past it to other panel config.");
+        copiedPanelConfig = config;
+        alert("Global settings saved at inner variable. You can past it to test panels config.");
     } else {
         let id = getPanelIndex(el);
         if (!id) return;
-        copyedPanelConfig = panels_config[id].panel_config;
+        copiedPanelConfig = panels_config[id].panel_config;
         alert("Panel config saved at inner variable. Past it to other panel config or gloabal settings.");
     }
 }
