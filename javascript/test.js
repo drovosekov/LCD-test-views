@@ -34,7 +34,7 @@ const panel_markup =
 		<input type='button' value='▲' onclick='copyPanelConfig(this)'
 		title="Copy panel config" />
 		<input type='button' value='_' onclick='collapsePanel(this)'
-		title="Collapse panel" />
+		title="Collapse panel" id="min_panel_{id}" />
 		<input type='button' value='X' onclick='delPanel(this)'
 		title="Delete panel" />
 	</span>
@@ -52,6 +52,8 @@ const panel_markup =
 
 const full_view_pixel = 3;
 const full_view_brk = 1;
+const tipDuration = '5000';   // duration of the notification in ms 
+
 
 var copiedPanelConfig = "";
 var panels_config = {};
@@ -66,6 +68,34 @@ var panels_obj = {};
     }
 }*/
 
+var ToolTip = (text, color_markup, repl_text) => {
+    if (color_markup) {
+        color_markup = ' alert-' + color_markup;
+    } else {
+        color_markup = '';
+    }
+
+    var tipBlock = document.createElement('div');
+    tipBlock.className = 'alert' + color_markup;
+    tipBlock.innerHTML = text.replace("%v", repl_text);
+
+    $("ohsnap").appendChild(tipBlock);
+
+    var ohSnapX = (element) => {
+        if (element) {
+            element.remove();
+        }
+    }
+
+    tipBlock.onclick = () => {
+        ohSnapX(tipBlock);
+    };
+
+    setTimeout(() => {
+        ohSnapX(tipBlock);
+    }, tipDuration);
+}
+
 var getPanelIndex = (el) => {
     if (el) {
         if (el.className == "card test_panel")
@@ -77,7 +107,7 @@ var getPanelIndex = (el) => {
 }
 
 var selMenu = (id) => {
-    ["full_page", "global_settings", "tests"].forEach(element => {
+    ["full_page", "custom_symbol", "config", "tests"].forEach(element => {
         $sd(element, 0);
         $ch("m_" + element, 0);
     });
@@ -137,9 +167,17 @@ var initFullViews = () => {
     selFullViewCP();
 }
 
+var createNewPanel = (config) => {
+    let newLCD = new CharLCD(config);
+    if (config.content) newLCD.text(0, 0, config.content);
+    panels_obj[config.id] = newLCD
+
+    $sbg($('panel_' + config.id).parentNode, config.border ? "#000" : "#fff");
+}
+
 var addPanel = (config) => {
     if (!config) {
-        let new_id = Object.keys(panels_obj).length;
+        let new_id = Object.keys(panels_config).length;
         config = {
             id: new_id,
             at: "panel_" + new_id,
@@ -153,47 +191,36 @@ var addPanel = (config) => {
             pixel_size: $('px_size').value,
             break_size: $('break_size').value,
             large: $('lcd_large').checked,
+            border: $('lcd_border').checked,
             content: ""
         }
     }
-    
+
     let newPanel = document.createElement('div');
     newPanel.className = "card test_panel";
     newPanel.id = "lcd_" + config.id;
     newPanel.innerHTML = panel_markup.replace("{text}", config.content).replace("{PanelName}", config.name).replace(/{id}/g, config.id);
     $("panels").appendChild(newPanel)
 
-    $sbg($('panel_' + config.id).parentNode, $('lcd_border').checked ? "#000" : "#fff");
+    // var namePanel = $("panel_name_" + config.id).innerHTML;
 
-    var namePanel = $("panel_name_" + config.id).innerHTML;
+    panels_config[config.id] = config;
+    createNewPanel(config);
 
-    panels_config[config.id] = {
-        name: namePanel,
-        panel_config: config
-    }
-    // alert(JSON.stringify(p))
-    let newLCD = new CharLCD(config);
-    if (config.content) newLCD.text(0, 0, config.content);
-    panels_obj[config.id] = newLCD
-
-    if (config.minimized) $sd("panel_area_" + id, 0);
+    if (config.minimized)
+        collapsePanel($("min_panel_" + config.id));
 }
 
 var updatePanel = (p) => {
     let id = getPanelIndex(p);
     let val = p.value;
     panels_obj[id].text(0, 0, val + "  ");
-    panels_config[id].panel_config.content = val;
-}
-
-var initPanels = () => {
-    let panels_config = localStorage.getItem('LCDtest_Panels_config');
-    // debug(panels_config);
+    panels_config[id].content = val;
 }
 
 var copyPanelConfig = (el) => {
     if (el == "global") {
-        let config = {
+        copiedPanelConfig = {
             rows: $('rows').value,
             cols: $('columns').value,
             rom: $('full_view_cp').value,
@@ -201,15 +228,49 @@ var copyPanelConfig = (el) => {
             on: $('lcd_text_color').value,
             pixel_size: $('px_size').value,
             break_size: $('break_size').value,
-            large: $('lcd_large').checked
+            large: $('lcd_large').checked,
+            border: $('lcd_border').checked
         }
-        copiedPanelConfig = config;
-        alert("Global settings saved at inner variable. You can past it to test panels config.");
+        ToolTip("Global settings saved at inner variable.<br />You can past it to test panels config", "green");
     } else {
         let id = getPanelIndex(el);
         if (!id) return;
-        copiedPanelConfig = panels_config[id].panel_config;
-        alert("Panel config saved at inner variable. Past it to other panel config or gloabal settings.");
+        copiedPanelConfig = panels_config[id];
+        debug(copiedPanelConfig);
+        ToolTip("Panel config saved at inner variable.<br />Past it to other panel config or gloabal settings", "green");
+    }
+}
+
+var pastPanelConfig = (el) => {
+    if (typeof copiedPanelConfig.rom != 'string') {
+        ToolTip("Error: empty config", "red");
+        return;
+    }
+
+    if (el == "global") {
+        $v('rows', copiedPanelConfig.rows);
+        $v('columns', copiedPanelConfig.cols);
+        $v('full_view_cp', copiedPanelConfig.rom);
+        $v('lcd_bg_color', copiedPanelConfig.off);
+        $v('lcd_text_color', copiedPanelConfig.on);
+        $v('px_size', copiedPanelConfig.pixel_size);
+        $v('break_size', copiedPanelConfig.break_size);
+        $ch('lcd_large', copiedPanelConfig.large);
+        $ch('lcd_border', copiedPanelConfig.border);
+        $('lcd_sizes').value = $('rows').value + "x" + $('columns').value + "x" + $('px_size').value;
+
+        ToolTip("Global settings replaced with saved", "yellow");
+    } else {
+        let id = getPanelIndex(el);
+        copiedPanelConfig.id = id;
+        copiedPanelConfig.at = "panel_" + id;
+        copiedPanelConfig.content = panels_config[id].content;
+        if (!copiedPanelConfig.name) copiedPanelConfig.name = panels_config[id].name;
+        panels_config[id] = copiedPanelConfig;
+        $h("panel_" + id, '');
+        createNewPanel(copiedPanelConfig);
+
+        ToolTip("Panel config replaced with saved", "yellow");
     }
 }
 
@@ -244,6 +305,7 @@ var collapsePanel = (el) => {
 var delPanel = (el) => {
     let id = getPanelIndex(el);
     if (confirm('Realy delete panel "' + $("panel_name_" + id).innerHTML + '"?')) {
+        ToolTip('"' + $("panel_name_" + id).innerHTML + '" R.I.P....', "blue");
         $("lcd_" + id).remove();
         delete panels_obj[id];
         delete panels_config[id];
@@ -280,39 +342,46 @@ var loadState = () => {
         else
             $v(element.name, localStorage.getItem('LCDtest_' + element.name) || element.defvalue)
     });
+
     $('lcd_sizes').value = $('rows').value + "x" + $('columns').value + "x" + $('px_size').value;
     selMenu(localStorage.getItem('SelPage') || 'full_page');
 }
 
-var savePanelsState = () => {
-    // debug(JSON.stringify(panels_test));
+var savePanelsState = () => { 
     localStorage.setItem('LCDtest_Panels_config', JSON.stringify(panels_config));
 }
 
-var loadPanelsState = () => {
+var initPanels = () => {
+    let cfg = JSON.parse(localStorage.getItem('LCDtest_Panels_config'));
+    if (!cfg || Object.keys(cfg).length == 0) {
+        addPanel({
+            id: 0,
+            at: "panel_0",
+            name: "Panel 1",
+            minimized: 0,
+            rows: 2,
+            cols: 16,
+            rom: "eu",
+            off: "#D5D9E0",
+            on: "#143",
+            pixel_size: 3,
+            break_size: 1,
+            large: 0,
+            border: 1,
+            content: "Test LCD Display\nEmulator HD44780"
+        });
+        return;
+    }
 
+    for (let i = 0; i < Object.keys(cfg).length; i++) {
+        addPanel(cfg[i]);
+    }
 }
 
 window.addEventListener('DOMContentLoaded', () => {
     loadState();
     initFullViews();
     initPanels();
-    // selMenu("tests");//TODO: for debug
-    addPanel({
-        id: 0,
-        at: "panel_0",
-        name: "Panel 1",
-        minimized: 0,
-        rows: 2,
-        cols: 16,
-        rom: "eu",
-        off: "#D5D9E0",
-        on: "#143",
-        pixel_size: 3,
-        break_size: 1,
-        large: 0,
-        content: "Test LCD Display\nEmulator HD44780"
-    });
 
     setInterval(savePanelsState, 5000);
 });

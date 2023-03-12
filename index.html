@@ -7,26 +7,31 @@
     <meta name="viewport" content="width=device-width,initial-scale=0.8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <script src="javascript/char-lcd.js"></script>
-    <script src="javascript/test.js"></script>
+    <script src="javascript/test.js"></script> 
     <link rel='stylesheet' href='css/styles-min.css'>
+    <link rel='stylesheet' href='css/ohsnap-min.css'>
     <link rel="shortcut icon" type="image/icon" href="img/favicon.ico" id="favicon" />
 </head>
 
 <body>
+    <div id="ohsnap"></div>
+
     <h1>LCD test view</h1>
 
     <!-- menu -->
     <div class='menu c-flex' id='menu'>
         <input type='radio' name='m_full_page' checked><label for='m_full_page' class='button'
             onclick="selMenu('full_page')">CP</label>
-        <input type='radio' name='m_global_settings'><label for='m_global_settings' class='button'
-            onclick="selMenu('global_settings')">Config</label>
+        <input type='radio' name='m_custom_symbol'><label for='m_custom_symbol' class='button'
+            onclick="selMenu('custom_symbol')">Custom</label>
+        <input type='radio' name='m_config'><label for='m_config' class='button'
+            onclick="selMenu('config')">Config</label>
         <input type='radio' name='m_tests'><label for='m_tests' class='button' onclick="selMenu('tests')">Test</label>
     </div>
 
     <div id="content">
 
-        <div class="card" id="full_page">
+        <div id="full_page" class="card">
             <div>
                 <span class="l">Full display codepage</span>
                 <span class="r">
@@ -47,7 +52,22 @@
             </div>
         </div>
 
-        <div id='global_settings' style="display:none;" class="c_cont">
+        <div id="custom_symbol" style="display:none;" class="c_cont">
+            <div style="display:flex;padding:6px">
+                <span class="r">
+                    <h3>Custom symbol generator</h3>
+                </span>
+                <span class="l">
+                    <input type='button' value='Add symbol' onclick='addCustomSymbol()' disabled />
+                </span>
+            </div>
+
+            <div id="symbols" class="card">
+                Under construction
+            </div>
+        </div>
+
+        <div id='config' style="display:none;" class="c_cont">
             <div style="display:flex;padding:6px">
                 <h2 style="width:80%">Global LCD panel settings</h2>
                 <span>
@@ -62,7 +82,7 @@
                     <span class="r">
                         <select id="lcd_sizes" onchange="selStndLCDSize(this.value)">
                             <option value="---" disabled selected="selected">Custom</option>
-                            <option value="1x8xx3">1x8</option>
+                            <option value="1x8x3">1x8</option>
                             <option value="2x8x3">2x8</option>
                             <option value="1x16x3">1x16</option>
                             <option value="2x16x3">2x16</option>
@@ -131,6 +151,8 @@
                             onchange="selFullViewCP()"> px</span>
                 </div>
             </div>
+            
+            <div class='desc'>Autosave state every 5 sec</div>
         </div>
 
         <div id='tests' style='display:none;' class="c_cont">
@@ -173,6 +195,8 @@
                 </div>//-->
 
             </div>
+
+            <div class='desc'>Autosave state every 5 sec</div>
         </div>
     </div>
     <div class='desc'>&copy; 2023 <a href='https://github.com/drovosekov/' target='_top'>Alexander Drovosekov</a>

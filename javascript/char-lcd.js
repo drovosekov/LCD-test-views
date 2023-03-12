@@ -2,6 +2,8 @@ const CW = 5;  // charachter width
 const CH = 8;  // character height
 const CL = 10; // large character height
 
+const brkGrid = "#444";
+
 class CharLCD {
   constructor(obj) {
     var createAt = (_) => {

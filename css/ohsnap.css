@@ -1,0 +1,53 @@
+#ohsnap {
+  position: fixed;
+  bottom: 5px;
+  right: 5px;
+  margin-left: 5px;
+  z-index: 99;
+}
+
+.alert {
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid #eed3d7;
+  border-radius: 4px;
+  bottom: 5px;
+  right: 21px;
+  /* Each alert has its own width */
+  /* float: right; */
+  clear: right;
+  font: 1em tahoma;
+  background-color: white;
+
+  -webkit-animation-name: fadeIn;
+  animation-name: fadeIn;
+  -webkit-animation-duration: 1s;
+  animation-duration: 1s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+
+.alert-red {
+  color: #FFF;
+  background-color: #DA4453;
+}
+
+.alert-green {
+  color: #FFF;
+  background-color: #37BC9B;
+}
+
+.alert-blue {
+  color: #FFF;
+  background-color: #4A89DC;
+}
+
+.alert-yellow {
+  color: #000;
+  background-color: #F6BB42;
+}
+
+.alert-orange {
+  color: #FFF;
+  background-color: #E9573F;
+}
