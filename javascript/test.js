@@ -23,50 +23,14 @@ if (!Object.keys) {
     };
 }
 
-const panel_markup =
-    `<div>
-	<span class="r">
-		<h3 onclick="editPanelName(this)" id="panel_name_{id}">{PanelName}</h3>
-	</span>
-	<span class="l">
-		<input type='button' value='▼' onclick='pastPanelConfig(this)'
-		title="Past panel config" />
-		<input type='button' value='▲' onclick='copyPanelConfig(this)'
-		title="Copy panel config" />
-		<input type='button' value='_' onclick='collapsePanel(this)'
-		title="Collapse panel" id="min_panel_{id}" />
-		<input type='button' value='X' onclick='delPanel(this)'
-		title="Delete panel" />
-	</span>
-</div>
-<div class="block" id="panel_area_{id}"> 
-	<div>
-		<textarea rows="2" cols="16" class="panel_row" onkeyup="updatePanel(this)">{text}</textarea>
-	</div> 
-	<span class="r"></span>
-	<span class="lcd_border">
-		<div id="panel_{id}"></div>
-	</span>
-	<span class="l"></span>
-</div>`;
-
 const full_view_pixel = 3;
 const full_view_brk = 1;
-const tipDuration = '5000';   // duration of the notification in ms 
+const tipDuration = '5000';   // duration of the info notification in ms 
 
-
+var init_complite = false;
 var copiedPanelConfig = "";
 var panels_config = {};
 var panels_obj = {};
-
-/*class tPanel {
-    constructor(obj) {
-        this.pastPanelConfig = (el) => { pastPanelConfig(el) };
-        this.copyPanelConfig = (el) => { copyPanelConfig(el) };
-        this.collapsePanel = (el) => { collapsePanel(el) };
-        this.delPanel = (el) => { delPanel(el) };
-    }
-}*/
 
 var ToolTip = (text, color_markup, repl_text) => {
     if (color_markup) {
@@ -175,6 +139,16 @@ var createNewPanel = (config) => {
     $sbg($('panel_' + config.id).parentNode, config.border ? "#000" : "#fff");
 }
 
+var setPanelInfoText = (config) => {
+    let info = "ROM: " + config.rom;
+    info += ", rows=" + config.rows;
+    info += ", cols=" + config.cols;
+    info += "<br/>pixel size=" + config.pixel_size;
+    info += ", break size=" + config.break_size;
+    info += config.large ? ", Large LCD" : "";
+    $("panel_info_" + config.id).innerHTML = info
+}
+
 var addPanel = (config) => {
     if (!config) {
         let new_id = Object.keys(panels_config).length;
@@ -199,23 +173,25 @@ var addPanel = (config) => {
     let newPanel = document.createElement('div');
     newPanel.className = "card test_panel";
     newPanel.id = "lcd_" + config.id;
-    newPanel.innerHTML = panel_markup.replace("{text}", config.content).replace("{PanelName}", config.name).replace(/{id}/g, config.id);
+    newPanel.innerHTML = $("panel_template").innerHTML.replace("{text}", config.content).replace("{PanelName}", config.name).replace(/{id}/g, config.id);
     $("panels").appendChild(newPanel)
-
-    // var namePanel = $("panel_name_" + config.id).innerHTML;
 
     panels_config[config.id] = config;
     createNewPanel(config);
 
     if (config.minimized)
         collapsePanel($("min_panel_" + config.id));
+
+    setPanelInfoText(config);
+    savePanelsState();
 }
 
 var updatePanel = (p) => {
     let id = getPanelIndex(p);
     let val = p.value;
-    panels_obj[id].text(0, 0, val + "  ");
+    panels_obj[id].text(0, 0, val);
     panels_config[id].content = val;
+    // savePanelsState();
 }
 
 var copyPanelConfig = (el) => {
@@ -269,6 +245,7 @@ var pastPanelConfig = (el) => {
         panels_config[id] = copiedPanelConfig;
         $h("panel_" + id, '');
         createNewPanel(copiedPanelConfig);
+        setPanelInfoText(copiedPanelConfig);
 
         ToolTip("Panel config replaced with saved", "yellow");
     }
@@ -309,6 +286,7 @@ var delPanel = (el) => {
         $("lcd_" + id).remove();
         delete panels_obj[id];
         delete panels_config[id];
+        savePanelsState();
     }
 }
 
@@ -325,6 +303,9 @@ var elSavedState = [
 ];
 
 var saveState = (selPage) => {
+    if (!init_complite)
+        return;
+
     elSavedState.forEach(element => {
         if ($(element.name).type == 'checkbox')
             localStorage.setItem('LCDtest_' + element.name, $(element.name).checked);
@@ -343,12 +324,15 @@ var loadState = () => {
             $v(element.name, localStorage.getItem('LCDtest_' + element.name) || element.defvalue)
     });
 
-    $('lcd_sizes').value = $('rows').value + "x" + $('columns').value + "x" + $('px_size').value;
+    $v('lcd_sizes', $('rows').value + "x" + $('columns').value + "x" + $('px_size').value);
+    if (!$('lcd_sizes').value)
+        $v('lcd_sizes', "---");
     selMenu(localStorage.getItem('SelPage') || 'full_page');
 }
 
 var savePanelsState = () => {
-    localStorage.setItem('LCDtest_Panels_config', JSON.stringify(panels_config));
+    if (init_complite)
+        localStorage.setItem('LCDtest_Panels_config', JSON.stringify(panels_config));
 }
 
 var initPanels = () => {
@@ -385,4 +369,5 @@ window.addEventListener('DOMContentLoaded', () => {
     initPanels();
 
     setInterval(savePanelsState, 5000);
+    init_complite = true;
 });

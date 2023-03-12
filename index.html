@@ -8,8 +8,10 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <script src="javascript/char-lcd.js"></script>
     <script src="javascript/test.js"></script>
+    <script src="javascript/prism.js"></script>
     <link rel='stylesheet' href='css/styles-min.css'>
     <link rel='stylesheet' href='css/ohsnap-min.css'>
+    <link rel='stylesheet' href='css/prism.css'>
     <link rel="shortcut icon" type="image/icon" href="img/favicon.ico" id="favicon" />
 </head>
 
@@ -69,7 +71,7 @@
 
         <div id='config' style="display:none;" class="c_cont">
             <div style="display:flex;padding:6px">
-                <h2 style="width:80%">Global LCD panel settings</h2>
+                <h1>Global LCD panel settings</h1>
                 <span>
                     <input type='button' value='▼' onclick='pastPanelConfig("global")' title="Past panel config" />
                     <input type='button' value='▲' onclick='copyPanelConfig("global")' title="Copy panel config" />
@@ -158,48 +160,48 @@
         <div id='tests' style='display:none;' class="c_cont">
             <div style="display:flex;padding:6px">
                 <span class="r">
-                    <h2>Test views</h2>
+                    <h1>Test views</h1>
                 </span>
                 <span class="l">
                     <input type='button' value='Add panel' onclick='addPanel()' />
                 </span>
             </div>
 
-            <div id="panels" class="block">
-                <!--<div class="card test_panel" id="lcd_0">
-                    <div>
-                        <span class="r">
-                            <h3 onclick="editPanelName(this)" id="panel_name_0">Panel 1</h3>
-                        </span>
-                        <span class="l">
-                            <input type='button' value='▼' onclick='pastPanelConfig(this)'
-                                title="Past panel config" />
-                            <input type='button' value='▲' onclick='copyPanelConfig(this)'
-                                title="Copy panel config" />
-                            <input type='button' value='_' onclick='collapsePanel(this)'
-                                title="Collapse panel" />
-                            <input type='button' value='X' onclick='delPanel(this)'
-                                title="Delete panel" />
-                        </span>
-                    </div>
-                    <div id="panel_area_0" class="block">
-						<div>
-							<textarea rows="2" cols="16" class="panel_row" onkeyup="updatePanel(this)"></textarea>
-						</div>
-						<span class="r"></span>
-						<span class="lcd_border">
-							<div id="panel_0"></div>
-						</span>
-						<span class="l"></span>
-					</div>
-                </div>//-->
-
-            </div>
+            <div id="panels" class="block"></div>
 
             <div class='desc'>Autosave state every 5 sec</div>
         </div>
     </div>
     <div class='desc'>&copy; 2023 <a href='https://github.com/drovosekov/' target='_top'>Alexander Drovosekov</a>
 </body>
+
+<div id="panel_template" style='display:none;'>
+    <div>
+        <span class="r">
+            <h2 onclick="editPanelName(this)" id="panel_name_{id}">{PanelName}</h2>
+        </span>
+        <span class="l">
+            <input type='button' value='▼' onclick='pastPanelConfig(this)' title="Past panel config" />
+            <input type='button' value='▲' onclick='copyPanelConfig(this)' title="Copy panel config" />
+            <input type='button' value='_' onclick='collapsePanel(this)' title="Collapse panel" id="min_panel_{id}" />
+            <input type='button' value='X' onclick='delPanel(this)' title="Delete panel" />
+        </span>
+    </div>
+    <div class="block" id="panel_area_{id}">
+        <div>
+            <span class="r">
+                <div class="desc" id="panel_info_{id}">panel info</div>
+            </span>
+            <span class="rl">
+                <textarea rows="2" cols="16" class="panel_row" onkeyup="updatePanel(this)">{text}</textarea>
+            </span>
+        </div>
+        <span class="r"></span>
+        <span class="lcd_border">
+            <div id="panel_{id}"></div>
+        </span>
+        <span class="l"></span>
+    </div>
+</div>
 
 </html>

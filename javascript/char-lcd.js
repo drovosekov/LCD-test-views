@@ -20,21 +20,21 @@ class CharLCD {
         for (c = 0; c < _.arg.cols; c++) {
           for (rr = 0; rr < CH; rr++) {
             for (cc = 0; cc < CW; cc++) {
-              x = cell * ((1 + CW) * c + 1 + cc) + _.arg.break_size;
+              x = cell * ((1 + CW) * c + cc) + _.arg.break_size;
               y = cell * ((1 + HH) * r + rr) + _.arg.break_size;
               pix = document.createElement('div');
               pix.style.top = y + 'px';
               pix.style.left = x + 'px';
               pix.style.width = _.arg.pixel_size + 'px';
               pix.style.height = _.arg.pixel_size + 'px';
-              pix.style.backgroundColor = _.arg.off;
+              //pix.style.backgroundColor = _.arg.off; 
               _.pix.push(pix);
               lcd.appendChild(pix);
             }
           }
         }
       }
-      
+
       _.arg.at.appendChild(lcd);
     }
 
@@ -54,14 +54,15 @@ class CharLCD {
     var char = (_, r, c, ch) => {
       var x = ch.charCodeAt(0);
       set(_, r, c, _.font[x] ? _.font[x] : cpList[_.rom].font[x]);
-      // set(_, r, c, _.font[x] ? _.font[x] : _.rom.font[x]);
     }
 
     var text = (_, r, c, str) => {
       if (r != parseInt(r) || r < 0 || r >= _.arg.rows || c != parseInt(c) || c < 0 || c >= _.arg.cols) return;
       var i, k, x;
-      for (i = 0; i < str.length; i++) {
+      for (i = 0; i < str.length + 1; i++) {
         if (str[i] == '\n') {
+          while (c < _.arg.cols)
+            char(_, r, c++, " ");
           c = 0;
           if (r++ >= _.arg.rows) return;
         }
@@ -72,7 +73,6 @@ class CharLCD {
             k = str[i] ? str.charCodeAt(i) : 0;
             x = 0x10000 + (x - 0xd800) * 0x400 + (k - 0xdc00);
           }
-          // if (_.rom.cmap[x]) x = _.rom.cmap[x];
           if (cpList[_.rom].cmap[x]) x = cpList[_.rom].cmap[x];
           if (x instanceof Array) {
             for (k = 0; k < x.length; k++) {
@@ -83,10 +83,18 @@ class CharLCD {
           else {
             if (x > 255) x = 0x3f;
             char(_, r, c, String.fromCharCode(x));
-            c++;
           }
-          if (c >= _.arg.cols) continue;
+          if (c++ >= _.arg.cols) continue;
         }
+      }
+
+      //fill sapces unused symbols
+      while (r < _.arg.rows) {
+        if (c > _.arg.cols) {
+          c = 0;
+          char(_, ++r, c, " ");
+        } else
+          char(_, r, c++, " ");
       }
     }
 
@@ -107,19 +115,17 @@ class CharLCD {
         on: '#143',  // color emulated on pixel
         large: false // emulate large LCD symbols
       }
-    };
-    // debug(_.arg);
+    }; 
 
     if (obj) {
-      for (var key in obj) { 
+      for (var key in obj) {
         if (typeof _.arg[key] != 'undefined' && _.arg[key] == parseInt(_.arg[key])) { // numeric
           if (obj[key] == parseInt(obj[key]) && obj[key] > 0)
             _.arg[key] = parseInt(obj[key]);
         }
         else
           _.arg[key] = obj[key];
-      }
-      debug(_.arg);
+      } 
 
       if (obj.rom) {
         var cpID = obj.rom.toString().toLowerCase();
