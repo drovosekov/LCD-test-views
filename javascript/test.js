@@ -236,9 +236,9 @@ var copyPanelConfig = (el) => {
         let id = getPanelIndex(el);
         if (!id) return;
         copiedPanelConfig = panels_config[id];
-        debug(copiedPanelConfig);
         ToolTip("Panel config saved at inner variable.<br />Past it to other panel config or gloabal settings", "green");
     }
+    debug(copiedPanelConfig);
 }
 
 var pastPanelConfig = (el) => {
@@ -257,7 +257,7 @@ var pastPanelConfig = (el) => {
         $v('break_size', copiedPanelConfig.break_size);
         $ch('lcd_large', copiedPanelConfig.large);
         $ch('lcd_border', copiedPanelConfig.border);
-        $('lcd_sizes').value = $('rows').value + "x" + $('columns').value + "x" + $('px_size').value;
+        $v('lcd_sizes', copiedPanelConfig.rows + "x" + copiedPanelConfig.cols + "x" + copiedPanelConfig.pixel_size);
 
         ToolTip("Global settings replaced with saved", "yellow");
     } else {
@@ -347,7 +347,7 @@ var loadState = () => {
     selMenu(localStorage.getItem('SelPage') || 'full_page');
 }
 
-var savePanelsState = () => { 
+var savePanelsState = () => {
     localStorage.setItem('LCDtest_Panels_config', JSON.stringify(panels_config));
 }
 
@@ -374,7 +374,8 @@ var initPanels = () => {
     }
 
     for (let i = 0; i < Object.keys(cfg).length; i++) {
-        addPanel(cfg[i]);
+        if (cfg[i].at)
+            addPanel(cfg[i]);
     }
 }
 

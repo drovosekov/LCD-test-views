@@ -10,7 +10,6 @@ class CharLCD {
       var r, c, rr, cc, x, y, pix;
       var cell = _.arg.pixel_size + _.arg.break_size;
       var HH = _.arg.large ? CL : CH;
-
       var lcd = document.createElement('div');
       lcd.className = "lcd_panel";
       lcd.style.width = cell * ((1 + CW) * _.arg.cols + 1) + _.arg.break_size + 'px';
@@ -35,6 +34,7 @@ class CharLCD {
           }
         }
       }
+      
       _.arg.at.appendChild(lcd);
     }
 
@@ -97,7 +97,7 @@ class CharLCD {
     var _ = {
       font: {},
       pix: [],
-      rom: 'eu',     // codepage eu|jp
+      rom: 'eu',     // codepage eu|jp|ru
       arg: {
         rows: 2,     // count rows emulated LCD
         cols: 16,    // cout columns emulated LCD
@@ -108,9 +108,10 @@ class CharLCD {
         large: false // emulate large LCD symbols
       }
     };
+    // debug(_.arg);
 
     if (obj) {
-      for (var key in obj) {
+      for (var key in obj) { 
         if (typeof _.arg[key] != 'undefined' && _.arg[key] == parseInt(_.arg[key])) { // numeric
           if (obj[key] == parseInt(obj[key]) && obj[key] > 0)
             _.arg[key] = parseInt(obj[key]);
@@ -118,6 +119,7 @@ class CharLCD {
         else
           _.arg[key] = obj[key];
       }
+      debug(_.arg);
 
       if (obj.rom) {
         var cpID = obj.rom.toString().toLowerCase();
