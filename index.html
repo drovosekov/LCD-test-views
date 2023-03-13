@@ -33,10 +33,10 @@
 
     <div id="content">
 
-        <div id="full_page" class="card">
-            <div>
-                <span class="l">Full display codepage</span>
-                <span class="r">
+        <div id="full_page" class="c_cont">
+            <div style="display:flex;padding:6px">
+                <span class="r"><h2>Full LCD codepage</h2></span>
+                <span class="l">
                     <select id="full_view_cp" onchange="selFullViewCP()">
                         <option value="eu">English</option>
                         <option value="jp">Japan</option>
@@ -44,13 +44,15 @@
                     </select>
                 </span>
             </div>
-            <div>
-                <span id='lcd0'></span>
-                <span id='lcd1'></span>
-            </div>
-            <div>
-                <span id='lcdv'></span>
-                <span id='full_view_lcd'></span>
+            <div class="card"> 
+                <div style="display: flex;">
+                    <span id='lcd0'></span>
+                    <span id='lcd1'></span>
+                </div>
+                <div style="display: flex;">
+                    <span id='lcdv'></span>
+                    <span id='full_view_lcd'></span>
+                </div>
             </div>
         </div>
 

@@ -88,7 +88,7 @@ class CharLCD {
         }
       }
 
-      //fill sapces unused symbols
+      //fill spaces unused symbols
       while (r < _.arg.rows) {
         if (c > _.arg.cols) {
           c = 0;
@@ -126,6 +126,8 @@ class CharLCD {
         else
           _.arg[key] = obj[key];
       } 
+
+      debug(_.arg);
 
       if (obj.rom) {
         var cpID = obj.rom.toString().toLowerCase();
