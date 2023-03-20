@@ -35,7 +35,9 @@
 
         <div id="full_page" class="c_cont">
             <div style="display:flex;padding:6px">
-                <span class="r"><h2>Full LCD codepage</h2></span>
+                <span class="r">
+                    <h2>Full LCD codepage</h2>
+                </span>
                 <span class="l">
                     <select id="full_view_cp" onchange="selFullViewCP()">
                         <option value="eu">English</option>
@@ -44,7 +46,7 @@
                     </select>
                 </span>
             </div>
-            <div class="card"> 
+            <div class="card">
                 <div style="display: flex;">
                     <span id='lcd0'></span>
                     <span id='lcd1'></span>
@@ -66,8 +68,62 @@
                 </span>
             </div>
 
-            <div id="symbols" class="card">
+            <div id="symbols" class="copy">
                 Under construction
+            </div>
+
+            <div class="card">
+                <div id="custom_template"></div>
+
+                <h3>Custom symbol generator</h3>
+                
+                <div>
+                    <div class='t-cont c-flex'>
+                        <input type='checkbox' id='lcd_bus' class='ios-toggle' onclick="saveState()" />
+                        <label for='lcd_bus' class='chb-label' data-off='I2C' data-on='Parallel'></label>
+                    </div>
+                </div>
+                <div>
+                    <div class='t-cont c-flex'>
+                        <input type='checkbox' id='lcd_data' class='ios-toggle' onclick="saveState()" />
+                        <label for='lcd_data' class='chb-label' data-off='Binary data' data-on='Hex data'></label>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <pre class="language-cpp">
+<code id="custom_sym_code">#include &lt;LiquidCrystal.h&gt;
+
+//parallel bus
+//pinout--------> RS, E, D4, D5, D6, D7
+LiquidCrystal lcd(12, 11, 5, 4,  3,  2);
+
+//1-wire bus--------->address, cols, rows
+//LiquidCrystal_I2C lcd(0x3F,   16,   2);
+
+{customCharArrays}
+/*byte customChar[] = {
+    0x10,
+    0x00,
+    0x00,
+    0x00,
+    0x00,
+    0x00,
+    0x00,
+    0x00
+};*/
+
+void setup() {    
+    lcd.begin({template_lcd_columns_x_rows}); //parallel: 16x2 etc.
+    {load_customCharsArrays} //lcd.createChar(0, customChar);
+    lcd.home();
+    lcd.write(0);
+}
+
+void loop() { }
+</code>
+                </pre>
             </div>
         </div>
 
@@ -111,12 +167,17 @@
                             onchange="saveState()"></span>
                 </div>
                 <div>
-                    <span class="l">Show display boder:</span>
-                    <span class="r"><input type="checkbox" id="lcd_border" onchange="saveState()"></span>
+                    <div class='t-cont c-flex'>
+                        <input type='checkbox' id='lcd_border' class='ios-toggle' onclick="saveState()" />
+                        <label for='lcd_border' class='chb-label' data-off='Hide border' data-on='Show border'></label>
+                    </div>
                 </div>
                 <div>
-                    <span class="l">Large display:</span>
-                    <span class="r"><input type="checkbox" id="lcd_large" onchange="saveState()"></span>
+                    <div class='t-cont c-flex'>
+                        <input type='checkbox' id='lcd_large' class='ios-toggle' onclick="saveState()" />
+                        <label for='lcd_large' class='chb-label' data-off='Standart display'
+                            data-on='Large display'></label>
+                    </div>
                 </div>
             </div>
             <div id="color" class="card">
@@ -164,12 +225,13 @@
                 <span class="r">
                     <h1>Test views</h1>
                 </span>
-                <span class="l">
-                    <input type='button' value='Add panel' onclick='addPanel()' />
-                </span>
             </div>
 
             <div id="panels" class="block"></div>
+
+            <span class="l">
+                <input type='button' value='Add panel' class="button" onclick='addPanel()' />
+            </span>
 
             <div class='desc'>Autosave state every 5 sec</div>
         </div>

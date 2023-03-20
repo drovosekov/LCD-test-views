@@ -125,22 +125,13 @@ class CharLCD {
         }
         else
           _.arg[key] = obj[key];
-      }
-
-      debug(_.arg);
+      } 
 
       if (obj.rom) {
         var cpID = obj.rom.toString().toLowerCase();
         if (cpList[cpID])
           _.rom = cpID;
-      }
-
-      // if (obj.rom) {
-      //   var cpID = obj.rom.toString().toLowerCase();
-      //   if (cpList[cpID])
-      //     _.rom = cpList[cpID]; 
-      // } else
-      //   _.rom = _eu;
+      } 
     }
     if (typeof _.arg.at == 'string')
       _.arg.at = document.getElementById(_.arg.at);
@@ -153,6 +144,7 @@ class CharLCD {
   }
 }
 
+/* Codepage tables */
 
 var _jp = {
   name: "Japan CP",
@@ -407,9 +399,7 @@ var _jp = {
     0xff98: 0xd8, 0xff99: 0xd9, 0xff9a: 0xda, 0xff9b: 0xdb, 0xff9c: 0xdc, 0xff9d: 0xdd, 0xff9e: 0xde, 0xff9f: 0xdf
   }
 };
-
-////////////////////////////
-
+ 
 var _eu = {
   name: "Eng CP",
   font: [
@@ -974,7 +964,7 @@ var _ru = {
   }
 };
 
-////////////////////////////
+/* Codepage list */
 var cpList = {
   "jp": _jp,
   "eu": _eu,

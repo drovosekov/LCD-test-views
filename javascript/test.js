@@ -184,6 +184,8 @@ var addPanel = (config) => {
 
     setPanelInfoText(config);
     savePanelsState();
+
+    $(newPanel.id).scrollIntoView();
 }
 
 var updatePanel = (p) => {

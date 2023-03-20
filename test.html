@@ -17,30 +17,29 @@
 
 <body>
 
-    <pre><code class="language-cpp">
-    #include <LiquidCrystal.h>
+    <pre><code class="language-cpp">#include &lt;LiquidCrystal.h&gt;
 
-        LiquidCrystal lcd(12, 11, 5, 4, 3, 2); // RS, E, D4, D5, D6, D7
-        
-        byte customChar[] = {
-            0x10,
-            0x00,
-            0x00,
-            0x00,
-            0x00,
-            0x00,
-            0x00,
-            0x00
-        };
-        
-        void setup() {
-            lcd.begin(16, 2);
-            lcd.createChar(0, customChar);
-            lcd.home();
-            lcd.write(0);
-        }
-        
-        void loop() { }
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2); // RS, E, D4, D5, D6, D7
+
+byte customChar[] = {
+    0x10,
+    0x00,
+    0x00,
+    0x00,
+    0x00,
+    0x00,
+    0x00,
+    0x00
+};
+
+void setup() {
+    lcd.begin(16, 2);
+    lcd.createChar(0, customChar);
+    lcd.home();
+    lcd.write(0);
+}
+
+void loop() { }
     </code></pre>
 
 </body>

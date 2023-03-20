@@ -151,6 +151,7 @@ $bg_button_submit: #1abcee;
     user-select: none;
     top: 3px;
     color: #888;
+    
 }
 
 .decr:active {
@@ -172,6 +173,7 @@ $bg_button_submit: #1abcee;
 
 input[type="radio"] {
     display: none;
+    // opacity: 0;
 }
 
 .radio-toolbar {
@@ -362,6 +364,14 @@ input {
         font-size: 1.1em;
         width: 30px;
         text-align: center;
+        // &:before {
+        //     content: "&ndash;";
+        //     z-index: 1; 
+        // }
+        // &:after { 
+        //     content: "+";
+        //     z-index: 0; 
+        // }
     }
     &[type="time"] {
         width: auto;
