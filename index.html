@@ -76,19 +76,24 @@
                 <div id="custom_template"></div>
 
                 <h3>Custom symbol generator</h3>
-                
-                <div>
-                    <div class='t-cont c-flex'>
-                        <input type='checkbox' id='lcd_bus' class='ios-toggle' onclick="saveState()" />
-                        <label for='lcd_bus' class='chb-label' data-off='I2C' data-on='Parallel'></label>
+
+                <span class="r">
+                    <h3>Custom symbol generator</h3>
+                </span>
+                <span class="l">
+                    <div>
+                        <div class='t-cont c-flex'>
+                            <input type='checkbox' id='lcd_bus' class='ios-toggle' onclick="saveState()" />
+                            <label for='lcd_bus' class='chb-label' data-off='I2C' data-on='Parallel'></label>
+                        </div>
                     </div>
-                </div>
-                <div>
-                    <div class='t-cont c-flex'>
-                        <input type='checkbox' id='lcd_data' class='ios-toggle' onclick="saveState()" />
-                        <label for='lcd_data' class='chb-label' data-off='Binary data' data-on='Hex data'></label>
+                    <div>
+                        <div class='t-cont c-flex'>
+                            <input type='checkbox' id='lcd_data' class='ios-toggle' onclick="saveState()" />
+                            <label for='lcd_data' class='chb-label' data-off='Binary data' data-on='Hex data'></label>
+                        </div>
                     </div>
-                </div>
+                </span>
             </div>
 
             <div>
@@ -103,7 +108,7 @@ LiquidCrystal lcd(12, 11, 5, 4,  3,  2);
 //LiquidCrystal_I2C lcd(0x3F,   16,   2);
 
 {customCharArrays}
-/*byte customChar[] = {
+uint8_t customChar[] = {
     0x10,
     0x00,
     0x00,
@@ -112,7 +117,7 @@ LiquidCrystal lcd(12, 11, 5, 4,  3,  2);
     0x00,
     0x00,
     0x00
-};*/
+};
 
 void setup() {    
     lcd.begin({template_lcd_columns_x_rows}); //parallel: 16x2 etc.

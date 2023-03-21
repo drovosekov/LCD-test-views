@@ -32,6 +32,7 @@ span {
     color: #888;
 }
 span.r {
+    display: table-cell; 
     margin: 5px auto;
     text-align: left;
     padding-left: 3px;
@@ -40,6 +41,7 @@ span.r {
     width: 50%;
 }
 span.l {
+    display: table-cell; 
     text-align: right;
     padding-right: 3px;
     width: 50%;
@@ -143,7 +145,7 @@ $bg_button_submit: #1abcee;
 
 .decr,
 .incr {
-    position: relative;
+    position: auto;
     width: 25px;
     height: 30px;
     font-size: 25px;
@@ -151,7 +153,6 @@ $bg_button_submit: #1abcee;
     user-select: none;
     top: 3px;
     color: #888;
-    
 }
 
 .decr:active {
@@ -366,11 +367,11 @@ input {
         text-align: center;
         // &:before {
         //     content: "&ndash;";
-        //     z-index: 1; 
+        //     z-index: 1;
         // }
-        // &:after { 
+        // &:after {
         //     content: "+";
-        //     z-index: 0; 
+        //     z-index: 0;
         // }
     }
     &[type="time"] {

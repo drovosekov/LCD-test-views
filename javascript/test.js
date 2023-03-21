@@ -1,3 +1,4 @@
+"use strict"; // Turns on strict mode for this compilation unit
 const mis = "missed id: ";
 var debug = (v) => { window.console.log(v) }
 var $$ = (id) => { return document.getElementById(id) }
@@ -15,7 +16,7 @@ var $parent = (el, lvl) => { return (lvl && el) ? $parent(el.parentNode, --lvl) 
 if (!Object.keys) {
     Object.keys = (obj) => {
         var keys = [], k;
-        for (k in obj) {
+        for (let k in obj) {
             if (Object.prototype.hasOwnProperty.call(obj, k))
                 keys.push(k);
         }
@@ -302,6 +303,8 @@ var elSavedState = [
     { name: 'lcd_text_color', defvalue: '#143' },
     { name: 'lcd_border' },
     { name: 'lcd_large' },
+    { name: 'lcd_data' },
+    { name: 'lcd_bus' },
 ];
 
 var saveState = (selPage) => {
