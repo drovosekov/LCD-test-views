@@ -32,7 +32,7 @@ span {
     color: #888;
 }
 span.r {
-    display: table-cell; 
+    display: table-cell;
     margin: 5px auto;
     text-align: left;
     padding-left: 3px;
@@ -41,7 +41,7 @@ span.r {
     width: 50%;
 }
 span.l {
-    display: table-cell; 
+    display: table-cell;
     text-align: right;
     padding-right: 3px;
     width: 50%;
@@ -141,6 +141,7 @@ span.l {
 
 $bg_button_off: #34495e;
 $bg_button_on: #1abc9c;
+$bg_button_hover: #16a78a;
 $bg_button_submit: #1abcee;
 
 .decr,
@@ -208,6 +209,10 @@ input[type="radio"] {
     cursor: pointer;
     img {
         margin-top: 6px;
+    }
+    &:hover {
+        background: $bg_button_hover;
+        color: #eee;
     }
 }
 
@@ -312,11 +317,14 @@ $chb_bg_color: #ddd;
         color: $checkbox_on_text;
     }
 }
+
 .disabled,
 input:disabled,
+button:disabled,
 input[disabled] {
     color: #888;
-    background-color: #444;
+    border-color: #777;
+    background-color: #eee;
     pointer-events: none;
     label:before {
         background: #eee;
@@ -326,7 +334,8 @@ input[disabled] {
 /* text inputs */
 
 input,
-select {
+select,
+button {
     &:focus {
         border-color: #66afe9;
         outline: 0;

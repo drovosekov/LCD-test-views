@@ -64,7 +64,7 @@
                     <h3>Custom symbol generator</h3>
                 </span>
                 <span class="l">
-                    <input type='button' value='Add symbol' onclick='addCustomSymbol()' disabled />
+                    <button onclick='addCustomSymbol()' disabled>Add symbol</button>
                 </span>
             </div>
 
@@ -75,21 +75,21 @@
             <div class="card">
                 <div id="custom_template"></div>
 
-                <h3>Custom symbol generator</h3>
-
-                <span class="r">
-                    <h3>Custom symbol generator</h3>
+                <span class="l">
+                    <div id="custom_symb_matrix"></div>
                 </span>
                 <span class="l">
+                    <button class="button" onclick='clearCustomSymb()' disabled>Clear</button>
+                    <button class="button" onclick='invertCustomSymb()'>Invert</button>
                     <div>
                         <div class='t-cont c-flex'>
-                            <input type='checkbox' id='lcd_bus' class='ios-toggle' onclick="saveState()" />
+                            <input type='checkbox' id='lcd_bus' class='ios-toggle' />
                             <label for='lcd_bus' class='chb-label' data-off='I2C' data-on='Parallel'></label>
                         </div>
                     </div>
                     <div>
                         <div class='t-cont c-flex'>
-                            <input type='checkbox' id='lcd_data' class='ios-toggle' onclick="saveState()" />
+                            <input type='checkbox' id='lcd_data' class='ios-toggle' />
                             <label for='lcd_data' class='chb-label' data-off='Binary data' data-on='Hex data'></label>
                         </div>
                     </div>
@@ -136,8 +136,8 @@ void loop() { }
             <div style="display:flex;padding:6px">
                 <h1>Global LCD panel settings</h1>
                 <span>
-                    <input type='button' value='▼' onclick='pastPanelConfig("global")' title="Past panel config" />
-                    <input type='button' value='▲' onclick='copyPanelConfig("global")' title="Copy panel config" />
+                    <button onclick='pastPanelConfig("global")' title="Past panel config">▼</button>
+                    <button onclick='copyPanelConfig("global")' title="Copy panel config">▲</button>
                 </span>
             </div>
             <div id="panel_size" class="card">
@@ -163,23 +163,21 @@ void loop() { }
                 </div>
                 <div>
                     <span class="l">Custom rows:</span>
-                    <span class="r"><input type="number" id="rows" value="2" min="1" max="8"
-                            onchange="saveState()"></span>
+                    <span class="r"><input type="number" id="rows" value="2" min="1" max="8"></span>
                 </div>
                 <div>
                     <span class="l">Custom columns:</span>
-                    <span class="r"><input type="number" id="columns" value="16" min="8" max="40"
-                            onchange="saveState()"></span>
+                    <span class="r"><input type="number" id="columns" value="16" min="8" max="40"></span>
                 </div>
                 <div>
                     <div class='t-cont c-flex'>
-                        <input type='checkbox' id='lcd_border' class='ios-toggle' onclick="saveState()" />
+                        <input type='checkbox' id='lcd_border' class='ios-toggle' />
                         <label for='lcd_border' class='chb-label' data-off='Hide border' data-on='Show border'></label>
                     </div>
                 </div>
                 <div>
                     <div class='t-cont c-flex'>
-                        <input type='checkbox' id='lcd_large' class='ios-toggle' onclick="saveState()" />
+                        <input type='checkbox' id='lcd_large' class='ios-toggle' />
                         <label for='lcd_large' class='chb-label' data-off='Standart display'
                             data-on='Large display'></label>
                     </div>
@@ -234,9 +232,7 @@ void loop() { }
 
             <div id="panels" class="block"></div>
 
-            <span class="l">
-                <input type='button' value='Add panel' class="button" onclick='addPanel()' />
-            </span>
+            <button class="button" onclick='addPanel()'>Add panel</button>
 
             <div class='desc'>Autosave state every 5 sec</div>
         </div>
@@ -250,10 +246,10 @@ void loop() { }
             <h2 onclick="editPanelName(this)" id="panel_name_{id}">{PanelName}</h2>
         </span>
         <span class="l">
-            <input type='button' value='▼' onclick='pastPanelConfig(this)' title="Past panel config" />
-            <input type='button' value='▲' onclick='copyPanelConfig(this)' title="Copy panel config" />
-            <input type='button' value='_' onclick='collapsePanel(this)' title="Collapse panel" id="min_panel_{id}" />
-            <input type='button' value='X' onclick='delPanel(this)' title="Delete panel" />
+            <button onclick='pastPanelConfig(this)' title="Past panel config">▼</button>
+            <button onclick='copyPanelConfig(this)' title="Copy panel config">▲</button>
+            <button onclick='collapsePanel(this)' title="Collapse panel" id="min_panel_{id}">_</button>
+            <button onclick='delPanel(this)' title="Delete panel">X</button>
         </span>
     </div>
     <div class="block" id="panel_area_{id}">

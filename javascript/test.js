@@ -86,12 +86,11 @@ var selStndLCDSize = (val) => {
     $('rows').value = v[0];
     $('columns').value = v[1];
     $('px_size').value = v[2];
-    saveState();
 }
 
 var selFullViewCP = () => {
     $h('full_view_lcd', '');
-    var full_view_lcd = new CharLCD({
+    let full_view_lcd = new CharLCD({
         at: 'full_view_lcd',
         rows: 16,
         cols: 16,
@@ -101,12 +100,11 @@ var selFullViewCP = () => {
         pixel_size: full_view_pixel,
         break_size: full_view_brk
     });
-    for (var i = 0; i < 16; i++) {
-        for (var j = 0; j < 16; j++) {
+    for (let i = 0; i < 16; i++) {
+        for (let j = 0; j < 16; j++) {
             full_view_lcd.char(i, j, String.fromCharCode(i * 16 + j));
         }
     }
-    saveState();
 }
 
 var initFullViews = () => {
@@ -271,14 +269,14 @@ var renamePanel = (el) => {
 
 var collapsePanel = (el) => {
     let id = getPanelIndex(el);
-    if (el.value == "_") {
+    if (el.innerText == "_") {
         $sd("panel_area_" + id, 0);
         panels_config[id].minimized = 1;
-        el.value = "□";
+        el.innerText = "□";
     } else {
         $sd("panel_area_" + id, 1);
         panels_config[id].minimized = 0;
-        el.value = "_";
+        el.innerText = "_";
     }
 }
 
@@ -323,10 +321,12 @@ var saveState = (selPage) => {
 
 var loadState = () => {
     elSavedState.forEach(element => {
-        if ($(element.name).type == 'checkbox')
-            $ch(element.name, localStorage.getItem('LCDtest_' + element.name))
+        if ($(element.name).type == 'checkbox') {
+            $ch(element.name, localStorage.getItem('LCDtest_' + element.name));
+        }
         else
-            $v(element.name, localStorage.getItem('LCDtest_' + element.name) || element.defvalue)
+            $v(element.name, localStorage.getItem('LCDtest_' + element.name) || element.defvalue);
+        $(element.name).onchange = () => { saveState() };
     });
 
     $v('lcd_sizes', $('rows').value + "x" + $('columns').value + "x" + $('px_size').value);
@@ -376,3 +376,15 @@ window.addEventListener('DOMContentLoaded', () => {
     setInterval(savePanelsState, 5000);
     init_complite = true;
 });
+
+var addCustomSymbol = () => {
+
+}
+
+var clearCustomSymb = () => {
+
+}
+
+var invertCustomSymb = () => {
+
+}
