@@ -207,9 +207,8 @@ input[type="radio"] {
     color: #fff;
     font-size: 25px;
     cursor: pointer;
-    img {
-        margin-top: 6px;
-    }
+    -webkit-transition-duration: 0.4s;  
+    transition-duration: 0.4s;
     &:hover {
         background: $bg_button_hover;
         color: #eee;
