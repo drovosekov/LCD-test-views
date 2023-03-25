@@ -326,7 +326,9 @@ var loadState = () => {
         }
         else
             $v(element.name, localStorage.getItem('LCDtest_' + element.name) || element.defvalue);
-        $(element.name).onchange = () => { saveState() };
+
+        var onCh = $(element.name).onchange;
+        $(element.name).onchange = () => { onCh(); saveState() };
     });
 
     $v('lcd_sizes', $('rows').value + "x" + $('columns').value + "x" + $('px_size').value);

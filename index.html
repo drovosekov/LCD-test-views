@@ -38,12 +38,17 @@
                 <span class="r">
                     <h2>Full LCD codepage</h2>
                 </span>
-                <span class="l">
-                    <select id="full_view_cp" onchange="selFullViewCP()">
+                <span>
+                    <select id="full_view_cp" onchange="selFullViewCP();">
                         <option value="eu">English</option>
                         <option value="jp">Japan</option>
                         <option value="ru">Russian</option>
                     </select>
+                </span>
+                &nbsp;
+                <span>
+                    <button onclick='pastPanelConfig("global")' title="Past panel config">▼</button>
+                    <button onclick='copyPanelConfig("global")' title="Copy panel config">▲</button>
                 </span>
             </div>
             <div class="card">
