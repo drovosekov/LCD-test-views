@@ -8,13 +8,11 @@
 
 .alert {
   padding: 15px;
-  margin-bottom: 20px;
+  margin-bottom: 5px;
   border: 1px solid #eed3d7;
   border-radius: 4px;
   bottom: 5px;
-  right: 21px;
-  /* Each alert has its own width */
-  /* float: right; */
+  right: 21px; 
   clear: right;
   font: 1em tahoma;
   background-color: white;

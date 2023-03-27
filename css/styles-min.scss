@@ -207,7 +207,7 @@ input[type="radio"] {
     color: #fff;
     font-size: 25px;
     cursor: pointer;
-    -webkit-transition-duration: 0.4s;  
+    -webkit-transition-duration: 0.4s;
     transition-duration: 0.4s;
     &:hover {
         background: $bg_button_hover;
@@ -228,12 +228,6 @@ input[type="radio"] {
     input[type="radio"]:checked + label {
         background-color: $bg_button_on;
     }
-}
-
-.c_cont input[type="submit"] {
-    background-color: $bg_button_submit;
-    margin: 5px 0 15px 0;
-    padding: 15px 20px;
 }
 
 /*iOS style checkbox*/
@@ -347,17 +341,15 @@ button {
     font-size: 1em;
 }
 
+button {
+    &:active {
+        transform: translateY(1px);
+    }
+}
+
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
     appearance: none;
-}
-
-.selSched {
-    font-size: 1em;
-    width: auto;
-    text-align: right;
-    padding: 2px 0;
-    margin: 2px;
 }
 
 .incr_panel {
@@ -396,14 +388,28 @@ input {
         border: 2px #f00 dotted;
         border-radius: 4px;
     }
-    &[name^="t_chat_id"] {
-        width: 80%;
-    }
-    &[name^="mqtt_port"] {
-        width: 50px;
-    }
     &[readonly] {
         background-color: #eee;
+    }
+}
+
+#custom_symb_matrix {
+    all: initial;
+    padding: 5px 5px;
+    .dot-px {
+        cursor: pointer;
+        height: 30px;
+        width: 30px;
+        margin: 3px;
+        vertical-align: baseline;
+        text-align: center;
+        border: 1px solid #000;
+    }
+    input {
+        display: none;
+    }
+    input:checked + .dot-px {
+        background-color: #143;
     }
 }
 

@@ -34,11 +34,8 @@ var panels_config = {};
 var panels_obj = {};
 
 var ToolTip = (text, color_markup, repl_text) => {
-    if (color_markup) {
+    if (color_markup)
         color_markup = ' alert-' + color_markup;
-    } else {
-        color_markup = '';
-    }
 
     var tipBlock = document.createElement('div');
     tipBlock.className = 'alert' + color_markup;
@@ -105,6 +102,7 @@ var selFullViewCP = () => {
             full_view_lcd.char(i, j, String.fromCharCode(i * 16 + j));
         }
     }
+    $('custom_symb_matrix').style.backgroundColor = $('lcd_bg_color').value;
 }
 
 var initFullViews = () => {
@@ -328,7 +326,7 @@ var loadState = () => {
             $v(element.name, localStorage.getItem('LCDtest_' + element.name) || element.defvalue);
 
         var onCh = $(element.name).onchange;
-        $(element.name).onchange = () => { onCh(); saveState() };
+        $(element.name).onchange = () => { if (typeof (onCh) == "function") onCh(); saveState() };
     });
 
     $v('lcd_sizes', $('rows').value + "x" + $('columns').value + "x" + $('px_size').value);
@@ -370,10 +368,37 @@ var initPanels = () => {
     }
 }
 
+var initCustomSymbolMatrix = () => {
+    var matrix = $('custom_symb_matrix');
+    matrix.style.backgroundColor = $('lcd_bg_color').value;
+    matrix.style.display = "block";
+    for (let row = 0; row < 8; row++) {
+        let mRow = document.createElement('div');
+        mRow.className = "row";
+        // mRow.setAttribute("dataX", row);
+        for (let col = 0; col < 5; col++) {
+            let index = "dot" + (col + row * 5);
+            let mLabel = document.createElement('label');
+            mLabel.className = "dot-px";
+            mLabel.setAttribute("for", index);
+            let mCell = document.createElement('input');
+            mCell.type = "checkbox";
+            mCell.id = index;
+            mCell.onchange = () => { updateCustomSymb() };
+            mRow.appendChild(mCell);
+            mRow.appendChild(mLabel);
+        }
+        matrix.appendChild(mRow);
+    }
+}
+
+
+
 window.addEventListener('DOMContentLoaded', () => {
     loadState();
     initFullViews();
     initPanels();
+    initCustomSymbolMatrix();
 
     setInterval(savePanelsState, 5000);
     init_complite = true;
@@ -384,9 +409,65 @@ var addCustomSymbol = () => {
 }
 
 var clearCustomSymb = () => {
-
+    for (let d = 0; d < 40; d++) {
+        $("dot" + d).checked = "";
+    }
 }
 
 var invertCustomSymb = () => {
+    for (let d = 0; d < 40; d++) {
+        $("dot" + d).checked = $("dot" + d).checked == "" ? "checked" : "";
+    }
+}
 
+var updateCustomSymb = () => {
+    let divCode = $('custom_sym_code').childNodes[1];
+    let code = divCode.innerText;
+    code = code.replace("{columns}", $('columns').value);
+    code = code.replace("{rows}", $('rows').value);
+    code = code.replace("<", "&lt;");
+    code = code.replace(">", "&gt;");
+    debug(code);
+
+    divCode.innerHTML = '<pre class="language-cpp"><code>' + code + '</code></pre>';
+    $sd("custom_sym_code", 1)
+}
+
+
+var binaryToHex = (s) => {
+    var i, k, part, accum, ret = '';
+    for (i = s.length - 1; i >= 3; i -= 4) {
+        // extract out in substrings of 4 and convert to hex
+        part = s.substr(i + 1 - 4, 4);
+        accum = 0;
+        for (k = 0; k < 4; k += 1) {
+            if (part[k] !== '0' && part[k] !== '1') {
+                // invalid character
+                return { valid: false };
+            }
+            // compute the length 4 substring
+            accum = accum * 2 + parseInt(part[k], 10);
+        }
+        if (accum >= 10) {
+            // 'A' to 'F'
+            ret = String.fromCharCode(accum - 10 + 'A'.charCodeAt(0)) + ret;
+        } else {
+            // '0' to '9'
+            ret = String(accum) + ret;
+        }
+    }
+    // remaining characters, i = 0, 1, or 2
+    if (i >= 0) {
+        accum = 0;
+        // convert from front
+        for (k = 0; k <= i; k += 1) {
+            if (s[k] !== '0' && s[k] !== '1') {
+                return { valid: false };
+            }
+            accum = accum * 2 + parseInt(s[k], 10);
+        }
+        // 3 bits, value cannot exceed 2^3 - 1 = 7, just convert
+        ret = String(accum) + ret;
+    }
+    return { valid: true, result: ret };
 }

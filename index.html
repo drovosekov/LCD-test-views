@@ -79,38 +79,44 @@
 
             <div class="card">
                 <div id="custom_template"></div>
-
-                <span class="l">
-                    <div id="custom_symb_matrix"></div>
-                </span>
-                <span class="l">
-                    <button class="button" onclick='clearCustomSymb()' disabled>Clear</button>
-                    <button class="button" onclick='invertCustomSymb()'>Invert</button>
-                    <div>
-                        <div class='t-cont c-flex'>
-                            <input type='checkbox' id='lcd_bus' class='ios-toggle' />
-                            <label for='lcd_bus' class='chb-label' data-off='I2C' data-on='Parallel'></label>
+                <div>
+                    <span class="r">
+                        <div id="custom_symb_matrix"></div>
+                    </span>
+                    <span class="l">
+                        <div>
+                            <button class="button" onclick='clearCustomSymb()'>Clear</button>
                         </div>
-                    </div>
-                    <div>
-                        <div class='t-cont c-flex'>
-                            <input type='checkbox' id='lcd_data' class='ios-toggle' />
-                            <label for='lcd_data' class='chb-label' data-off='Binary data' data-on='Hex data'></label>
+                        <div>
+                            <button class="button" onclick='invertCustomSymb()'>Invert</button>
                         </div>
-                    </div>
-                </span>
+                        <div>
+                            <div class='t-cont c-flex'>
+                                <input type='checkbox' id='lcd_bus' class='ios-toggle' />
+                                <label for='lcd_bus' class='chb-label' data-off='I2C' data-on='Parallel'></label>
+                            </div>
+                        </div>
+                        <div>
+                            <div class='t-cont c-flex'>
+                                <input type='checkbox' id='lcd_data' class='ios-toggle' />
+                                <label for='lcd_data' class='chb-label' data-off='Binary data'
+                                    data-on='Hex data'></label>
+                            </div>
+                        </div>
+                    </span>
+                </div>
             </div>
 
-            <div>
+            <div id="custom_sym_code" class="hidden">
                 <pre class="language-cpp">
-<code id="custom_sym_code">#include &lt;LiquidCrystal.h&gt;
+<code>#include &lt;LiquidCrystal.h&gt;
 
 //parallel bus
 //pinout--------> RS, E, D4, D5, D6, D7
 LiquidCrystal lcd(12, 11, 5, 4,  3,  2);
 
-//1-wire bus--------->address, cols, rows
-//LiquidCrystal_I2C lcd(0x3F,   16,   2);
+//1-wire bus--------->address 
+//LiquidCrystal_I2C lcd(0x3F, {columns}, {rows});
 
 {customCharArrays}
 uint8_t customChar[] = {
@@ -125,7 +131,7 @@ uint8_t customChar[] = {
 };
 
 void setup() {    
-    lcd.begin({template_lcd_columns_x_rows}); //parallel: 16x2 etc.
+    lcd.begin({columns}, {rows}); //parallel: 16x2 etc.
     {load_customCharsArrays} //lcd.createChar(0, customChar);
     lcd.home();
     lcd.write(0);
