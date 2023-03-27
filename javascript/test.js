@@ -429,7 +429,7 @@ var updateCustomSymb = () => {
     code = code.replace(">", "&gt;");
     debug(code);
 
-    divCode.innerHTML = '<pre class="language-cpp"><code>' + code + '</code></pre>';
+    divCode.innerHTML = '<pre><code class="language-cpp">' + code + '</code></pre>';
     $sd("custom_sym_code", 1)
 }
 
