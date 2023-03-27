@@ -421,7 +421,7 @@ var invertCustomSymb = () => {
 }
 
 var updateCustomSymb = () => {
-    let divCode = $('custom_sym_code').childNodes[1];
+    let divCode = $('custom_sym_code');
     let code = divCode.innerText;
     code = code.replace("{columns}", $('columns').value);
     code = code.replace("{rows}", $('rows').value);
