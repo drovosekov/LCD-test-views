@@ -88,6 +88,10 @@ span.l {
         -ms-transition: height 0.5s linear;
         -o-transition: height 0.5s linear;
         transition: height 0.5s linear;
+        #custom_sym_code {
+            align-items: left;
+            text-align: left;
+        }
         div {
             display: flex;
             justify-content: center;

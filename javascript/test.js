@@ -412,25 +412,47 @@ var clearCustomSymb = () => {
     for (let d = 0; d < 40; d++) {
         $("dot" + d).checked = "";
     }
+    updateCustomSymb();
 }
 
 var invertCustomSymb = () => {
     for (let d = 0; d < 40; d++) {
         $("dot" + d).checked = $("dot" + d).checked == "" ? "checked" : "";
     }
+    updateCustomSymb();
 }
 
 var updateCustomSymb = () => {
-    let divCode = $('custom_sym_code');
-    let code = divCode.innerText;
-    code = code.replace("{columns}", $('columns').value);
-    code = code.replace("{rows}", $('rows').value);
-    code = code.replace("<", "&lt;");
-    code = code.replace(">", "&gt;");
-    debug(code);
+    let code = $('code_tempalte').innerText;
+    code = code.replace(/\{columns\}/g, $('columns').value);
+    code = code.replace(/\{rows\}/g, $('rows').value);
+    // code = code.replace(/\</g, "&lt;");
+    // code = code.replace(/\>/g, "&gt;");
+    // code = code.replace(/&/g, "&amp;");
+    if ($('lcd_bus').checked)
+        code = code.replace(/{I2C_bus}(.|\n)*?{\/I2C_bus}/g, "").replace(/({parallel_bus}\n|{\/parallel_bus}\n\n)/g, "");
+    else
+        code = code.replace(/{parallel_bus}(.|\n)*?{\/parallel_bus}/g, "").replace(/(\n{I2C_bus}\n|{\/I2C_bus}\n)/g, "");
 
-    divCode.innerHTML = '<pre><code class="language-cpp">' + code + '</code></pre>';
-    $sd("custom_sym_code", 1)
+    let rowIdx = 0;
+    let rowByte = "";
+    for (let d = 0; d <= 40; d++) {
+        if (d > 0 && d % 5 == 0) {
+            rowIdx++;
+            if ($('lcd_data').checked)
+                rowByte = "0x" + binaryToHex(rowByte);
+            else
+                rowByte = "B" + rowByte;
+            code = code.replace("{row" + rowIdx + "}", rowByte);
+            if (d == 40) break;
+            rowByte = "";
+        }
+        rowByte += $('dot' + d).checked ? "1" : "0";
+    }
+    code = code.replace(/({customCharArrays}|{\/customCharArrays})/g, "");
+
+    $('custom_sym_code').innerHTML = Prism.highlight(code, Prism.languages.cpp, 'cpp');
+    $sd("div_code", 1)
 }
 
 
@@ -469,5 +491,5 @@ var binaryToHex = (s) => {
         // 3 bits, value cannot exceed 2^3 - 1 = 7, just convert
         ret = String(accum) + ret;
     }
-    return { valid: true, result: ret };
+    return ret;
 }

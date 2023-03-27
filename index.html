@@ -69,13 +69,9 @@
                     <h3>Custom symbol generator</h3>
                 </span>
                 <span class="l">
-                    <button onclick='addCustomSymbol()' disabled>Add symbol</button>
+                    <!-- <button onclick='addCustomSymbol()' disabled>Add symbol</button> -->
                 </span>
-            </div>
-
-            <div id="symbols" class="copy">
-                Under construction
-            </div>
+            </div> 
 
             <div class="card">
                 <div id="custom_template"></div>
@@ -92,13 +88,13 @@
                         </div>
                         <div>
                             <div class='t-cont c-flex'>
-                                <input type='checkbox' id='lcd_bus' class='ios-toggle' />
+                                <input type='checkbox' id='lcd_bus' class='ios-toggle' onchange="updateCustomSymb()" />
                                 <label for='lcd_bus' class='chb-label' data-off='I2C' data-on='Parallel'></label>
                             </div>
                         </div>
                         <div>
                             <div class='t-cont c-flex'>
-                                <input type='checkbox' id='lcd_data' class='ios-toggle' />
+                                <input type='checkbox' id='lcd_data' class='ios-toggle' onchange="updateCustomSymb()" />
                                 <label for='lcd_data' class='chb-label' data-off='Binary data'
                                     data-on='Hex data'></label>
                             </div>
@@ -107,39 +103,44 @@
                 </div>
             </div>
 
-            <div id="custom_sym_code" class="hidden">
-                <pre class="language-cpp">
-<code>#include &lt;LiquidCrystal.h&gt;
+            <pre class="hidden" id="code_tempalte">
+{parallel_bus}
+#include &lt;LiquidCrystal.h&gt;
 
 //parallel bus
 //pinout--------> RS, E, D4, D5, D6, D7
 LiquidCrystal lcd(12, 11, 5, 4,  3,  2);
+{/parallel_bus}
+{I2C_bus}
+#include &lt;Wire.h&gt;
+#include &lt;LiquidCrystal_I2C.h&gt;
 
 //1-wire bus--------->address 
-//LiquidCrystal_I2C lcd(0x3F, {columns}, {rows});
-
+LiquidCrystal_I2C lcd(0x3F, {columns}, {rows});
+{/I2C_bus}
 {customCharArrays}
 uint8_t customChar[] = {
-    0x10,
-    0x00,
-    0x00,
-    0x00,
-    0x00,
-    0x00,
-    0x00,
-    0x00
+    {row1},
+    {row2},
+    {row3},
+    {row4},
+    {row5},
+    {row6},
+    {row7},
+    {row8}
 };
-
+{/customCharArrays}
 void setup() {    
     lcd.begin({columns}, {rows}); //parallel: 16x2 etc.
-    {load_customCharsArrays} //lcd.createChar(0, customChar);
+    lcd.createChar(0, customChar); //{load_customCharsArrays}
     lcd.home();
     lcd.write(0);
 }
 
 void loop() { }
-</code>
-                </pre>
+</pre>
+            <div class="card">
+                <pre class="hidden" id="div_code"><code id="custom_sym_code" class="language-cpp"></code></pre>
             </div>
         </div>
 
