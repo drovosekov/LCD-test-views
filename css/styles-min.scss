@@ -91,6 +91,7 @@ span.l {
         #custom_sym_code {
             align-items: left;
             text-align: left;
+            width: 90%;
         }
         div {
             display: flex;
@@ -223,7 +224,7 @@ input[type="radio"] {
     display: flex;
     min-width: 500px;
     label {
-        padding: 6px 16px;
+        padding: 5px 10px;
         margin: 5px;
     }
     input[type="radio"] + label {

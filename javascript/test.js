@@ -6,7 +6,7 @@ var $n = (id) => { return document.getElementsByName(id)[0] }
 var $ = (id) => { if ($$(id)) return $$(id); else return $n(id) }
 var $sbg = (id, color) => { if (id) id.style.backgroundColor = color; else debug(mis + id) }
 var $sc = (id, color) => { if ($(id)) $(id).style.color = color; else debug(mis + id) }
-var $sd = (id, v, st = 'block') => { if ($(id)) $(id).style.display = v ? st : 'none'; else debug(mis + id) }
+var $sd = (id, v, st = 'block') => { if ($(id)) { $(id).classList.remove("hidden"); $(id).style.display = v ? st : 'none' } else debug(mis + id) }
 var $tt = (id) => { if ($(id)) return $(id).innerText; else debug(mis + id) }
 var $h = (id, v) => { if ($(id)) $(id).innerHTML = v; else debug(mis + id) }
 var $v = (id, v) => { if ($(id)) $(id).value = v; else debug(mis + id) }
@@ -456,7 +456,7 @@ var updateCustomSymb = () => {
     code = code.replace(/({customCharArrays}|{\/customCharArrays})/g, "");
 
     $('custom_sym_code').innerHTML = Prism.highlight(code, Prism.languages.cpp, 'cpp');
-    $sd("div_code", 1)
+    $sd("div_code", 1);
 }
 
 
