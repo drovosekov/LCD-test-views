@@ -69,7 +69,7 @@ var getPanelIndex = (el) => {
 }
 
 var selMenu = (id) => {
-    ["full_page", "custom_symbol", "config", "tests"].forEach(element => {
+    ["about", "cps", "custom_symbol", "config", "tests"].forEach(element => {
         $sd(element, 0);
         $ch("m_" + element, 0);
     });
@@ -415,6 +415,13 @@ var clearCustomSymb = () => {
     updateCustomSymb();
 }
 
+var allOnCustomSymb = () => {
+    for (let d = 0; d < 40; d++) {
+        $("dot" + d).checked = "checked";
+    }
+    updateCustomSymb();
+}
+
 var invertCustomSymb = () => {
     for (let d = 0; d < 40; d++) {
         $("dot" + d).checked = $("dot" + d).checked == "" ? "checked" : "";
@@ -426,9 +433,6 @@ var updateCustomSymb = () => {
     let code = $('code_tempalte').innerText;
     code = code.replace(/\{columns\}/g, $('columns').value);
     code = code.replace(/\{rows\}/g, $('rows').value);
-    // code = code.replace(/\</g, "&lt;");
-    // code = code.replace(/\>/g, "&gt;");
-    // code = code.replace(/&/g, "&amp;");
     if ($('lcd_bus').checked)
         code = code.replace(/{I2C_bus}(.|\n)*?{\/I2C_bus}/g, "").replace(/({parallel_bus}\n|{\/parallel_bus}\n\n)/g, "");
     else

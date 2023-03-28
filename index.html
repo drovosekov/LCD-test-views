@@ -22,8 +22,9 @@
 
     <!-- menu -->
     <div class='menu c-flex' id='menu'>
-        <input type='radio' name='m_full_page' checked><label for='m_full_page' class='button'
-            onclick="selMenu('full_page')">CPs</label>
+        <input type='radio' name='m_about' checked><label for='m_about' class='button'
+            onclick="selMenu('about')">About</label>
+        <input type='radio' name='m_cps'><label for='m_cps' class='button' onclick="selMenu('cps')">CPs</label>
         <input type='radio' name='m_custom_symbol'><label for='m_custom_symbol' class='button'
             onclick="selMenu('custom_symbol')">Custom</label>
         <input type='radio' name='m_config'><label for='m_config' class='button'
@@ -32,8 +33,27 @@
     </div>
 
     <div id="content">
+        <div id="about" class="c_cont">
+            <div style="display:flex;padding:6px">
+                <span class="r">
+                    <h2>About this tool site</h2>
+                </span>
+            </div>
+            <div class="card" style="padding:6px;text-align: left;">
+                <div>
+                    The HD44780 is a controller for character-based liquid crystal displays (LCDs). In addition to the
+                    standard pre-programmed characters, it allows you to define up to eight of your own graphic patterns
+                    on a 5x8 (or sometimes 5x7 - not released on it) grid. This page lets you experiment with various
+                    patterns in symbols generator and shows the code that need to be programmed into the controller to
+                    get those patterns on to the display. Also you can emulate views of LCD panels with different size,
+                    colors and code pages.</div>
+                <div>
+                    Source code is open see on&nbsp;<a href="https://github.com/drovosekov/" target="_blank">GitHub</a>
+                </div>
+            </div>
+        </div>
 
-        <div id="full_page" class="c_cont">
+        <div id="cps" style="display:none;" class="c_cont">
             <div style="display:flex;padding:6px">
                 <span class="r">
                     <h2>Full LCD codepage</h2>
@@ -43,6 +63,7 @@
                         <option value="eu">English</option>
                         <option value="jp">Japan</option>
                         <option value="ru">Russian</option>
+                        <option value="patterns">Patterns</option>
                     </select>
                 </span>
                 &nbsp;
@@ -71,7 +92,7 @@
                 <span class="l">
                     <!-- <button onclick='addCustomSymbol()' disabled>Add symbol</button> -->
                 </span>
-            </div> 
+            </div>
 
             <div class="card">
                 <div id="custom_template"></div>
@@ -82,6 +103,9 @@
                     <span class="l">
                         <div>
                             <button class="button" onclick='clearCustomSymb()'>Clear</button>
+                        </div>
+                        <div>
+                            <button class="button" onclick='allOnCustomSymb()'>All on</button>
                         </div>
                         <div>
                             <button class="button" onclick='invertCustomSymb()'>Invert</button>
@@ -131,8 +155,8 @@ uint8_t customChar[] = {
 };
 {/customCharArrays}
 void setup() {    
-    lcd.begin({columns}, {rows}); //parallel: 16x2 etc.
-    lcd.createChar(0, customChar); //{load_customCharsArrays}
+    lcd.begin({columns}, {rows});
+    lcd.createChar(0, customChar);
     lcd.home();
     lcd.write(0);
 }
