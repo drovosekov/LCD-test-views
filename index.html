@@ -48,7 +48,8 @@
                     get those patterns on to the display. Also you can emulate views of LCD panels with different size,
                     colors and code pages.</div>
                 <div>
-                    Source code is open see on&nbsp;<a href="https://github.com/drovosekov/" target="_blank">GitHub</a>
+                    Source code is open under MIT license. See on&nbsp;<a href="https://github.com/drovosekov/"
+                        target="_blank">GitHub</a>
                 </div>
             </div>
         </div>
@@ -58,19 +59,19 @@
                 <span class="r">
                     <h2>Full LCD codepage</h2>
                 </span>
-                <span>
+                <div>
                     <select id="full_view_cp" onchange="selFullViewCP();">
                         <option value="eu">English</option>
                         <option value="jp">Japan</option>
                         <option value="ru">Russian</option>
                         <option value="patterns">Patterns</option>
                     </select>
-                </span>
+                </div>
                 &nbsp;
-                <span>
+                <div>
                     <button onclick='pastPanelConfig("global")' title="Past panel config">▼</button>
                     <button onclick='copyPanelConfig("global")' title="Copy panel config">▲</button>
-                </span>
+                </div>
             </div>
             <div class="card">
                 <div style="display: flex;">
@@ -127,21 +128,16 @@
                 </div>
             </div>
 
-            <pre class="hidden" id="code_tempalte">
-{parallel_bus}
-#include &lt;LiquidCrystal.h&gt;
+            <pre class="hidden" id="code_arduino_tempalte">
+{parallel_bus}#include &lt;LiquidCrystal.h&gt;
 
 //parallel bus
 //pinout--------> RS, E, D4, D5, D6, D7
-LiquidCrystal lcd(12, 11, 5, 4,  3,  2);
-{/parallel_bus}
-{I2C_bus}
-#include &lt;Wire.h&gt;
+LiquidCrystal lcd(12, 11, 5, 4,  3,  2);{/parallel_bus}{I2C_bus}#include &lt;Wire.h&gt;
 #include &lt;LiquidCrystal_I2C.h&gt;
 
 //1-wire bus--------->address 
-LiquidCrystal_I2C lcd(0x3F, {columns}, {rows});
-{/I2C_bus}
+LiquidCrystal_I2C lcd(0x3F, {columns}, {rows});{/I2C_bus}
 {customCharArrays}
 uint8_t customChar[] = {
     {row1},
@@ -154,8 +150,8 @@ uint8_t customChar[] = {
     {row8}
 };
 {/customCharArrays}
-void setup() {    
-    lcd.begin({columns}, {rows});
+void setup() {
+    {I2C_bus}lcd.begin();{/I2C_bus}{parallel_bus}lcd.begin({columns}, {rows});{/parallel_bus}
     lcd.createChar(0, customChar);
     lcd.home();
     lcd.write(0);

@@ -430,13 +430,13 @@ var invertCustomSymb = () => {
 }
 
 var updateCustomSymb = () => {
-    let code = $('code_tempalte').innerText;
+    let code = $('code_arduino_tempalte').innerText;
     code = code.replace(/\{columns\}/g, $('columns').value);
     code = code.replace(/\{rows\}/g, $('rows').value);
     if ($('lcd_bus').checked)
-        code = code.replace(/{I2C_bus}(.|\n)*?{\/I2C_bus}/g, "").replace(/({parallel_bus}\n|{\/parallel_bus}\n\n)/g, "");
+        code = code.replace(/{I2C_bus}(.|\n)*?{\/I2C_bus}/g, "").replace(/({parallel_bus}|{\/parallel_bus})/g, "");
     else
-        code = code.replace(/{parallel_bus}(.|\n)*?{\/parallel_bus}/g, "").replace(/(\n{I2C_bus}\n|{\/I2C_bus}\n)/g, "");
+        code = code.replace(/{parallel_bus}(.|\n)*?{\/parallel_bus}/g, "").replace(/({I2C_bus}|{\/I2C_bus})/g, "");
 
     let rowIdx = 0;
     let rowByte = "";

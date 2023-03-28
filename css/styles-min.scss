@@ -72,6 +72,11 @@ span.l {
         animation-duration: 1s;
         -webkit-animation-fill-mode: both;
         animation-fill-mode: both;
+        div{
+            vertical-align: middle;
+            align-items: center;
+            align-content: center;
+        }
     }
     .card {
         justify-content: center;
@@ -88,10 +93,12 @@ span.l {
         -ms-transition: height 0.5s linear;
         -o-transition: height 0.5s linear;
         transition: height 0.5s linear;
+        pre{            
+            width: 90%;
+        }
         #custom_sym_code {
             align-items: left;
             text-align: left;
-            width: 90%;
         }
         div {
             display: flex;
@@ -344,6 +351,7 @@ button {
     border-radius: 4px;
     padding: 6px 12px;
     font-size: 1em;
+    cursor: pointer;
 }
 
 button {
