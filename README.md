@@ -7,3 +7,5 @@ Features this web based emulator:
 * Customizable UI
 * Unlimited quantity of test panels
 * Auto save config settings and test panels at local storage of your web browser
+* Custom symbol generator code for arduino
+* Template table with custom symbols
