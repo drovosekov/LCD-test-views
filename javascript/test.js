@@ -120,7 +120,7 @@ var initFullViews = () => {
     lcd1.text(0, 0, "0123456789ABCDEF");
 
     var lcdv = new CharLCD({
-        at: 'lcdv', rows: 16, cols: 1, off: '#fff', on: '#000',
+        at: 'lcdv', rows: 16, cols: 1, off: '#fff', on: '#000', sym_border: 1,
         pixel_size: full_view_pixel, break_size: full_view_brk
     });//vertical index 
     lcdv.text(0, 0, "0\n1\n2\n3\n4\n5\n6\n7\n8\n9\nA\nB\nC\nD\nE\nF");
@@ -161,6 +161,7 @@ var addPanel = (config) => {
             on: $('lcd_text_color').value,
             pixel_size: $('px_size').value,
             break_size: $('break_size').value,
+            sym_border: 1,
             large: $('lcd_large').checked,
             border: $('lcd_border').checked,
             content: ""
@@ -178,7 +179,6 @@ var addPanel = (config) => {
 
     if (config.minimized)
         collapsePanel($("min_panel_" + config.id));
-
     setPanelInfoText(config);
     savePanelsState();
 
@@ -355,6 +355,7 @@ var initPanels = () => {
             on: "#143",
             pixel_size: 3,
             break_size: 1,
+            sym_border: 1,
             large: 0,
             border: 1,
             content: "Test LCD Display\nEmulator HD44780"

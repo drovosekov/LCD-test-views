@@ -72,7 +72,7 @@ span.l {
         animation-duration: 1s;
         -webkit-animation-fill-mode: both;
         animation-fill-mode: both;
-        div{
+        div {
             vertical-align: middle;
             align-items: center;
             align-content: center;
@@ -93,7 +93,7 @@ span.l {
         -ms-transition: height 0.5s linear;
         -o-transition: height 0.5s linear;
         transition: height 0.5s linear;
-        pre{            
+        pre {
             width: 90%;
         }
         #custom_sym_code {
@@ -133,9 +133,28 @@ span.l {
 
 .lcd_panel {
     position: relative;
-    div {
+    ul {
         position: absolute;
         display: inline-block;
+        margin: 0;
+        cursor: pointer;
+        padding: 1px; 
+    }
+    i {
+        position: absolute;
+        display: inline-block; 
+    }
+    &:hover {
+        .border {
+            border: 1px solid #444;
+            margin-left: -1px;
+            margin-top: -1px;
+        }
+        .border:hover {
+            border: 2px solid #f00;
+            margin-left: -2px;
+            margin-top: -2px;
+        }
     }
 }
 
@@ -351,10 +370,10 @@ button {
     border-radius: 4px;
     padding: 6px 12px;
     font-size: 1em;
-    cursor: pointer;
 }
 
 button {
+    cursor: pointer;
     &:active {
         transform: translateY(1px);
     }

@@ -12,26 +12,37 @@ class CharLCD {
       var HH = _.arg.large ? CL : CH;
       var lcd = document.createElement('div');
       lcd.className = "lcd_panel";
-      lcd.style.width = cell * ((1 + CW) * _.arg.cols + 1) + _.arg.break_size + 'px';
-      lcd.style.height = cell * ((1 + HH) * _.arg.rows + 1) + _.arg.break_size + 'px';
+      lcd.style.width = (cell * (1 + CW) * _.arg.cols - 1) + 'px';
+      lcd.style.height = (cell * (1 + HH) * _.arg.rows - 1) + 'px';
       lcd.style.backgroundColor = _.arg.off;
 
       for (r = 0; r < _.arg.rows; r++) {
         for (c = 0; c < _.arg.cols; c++) {
+          let sep = document.createElement('ul');
+          x = cell * c * (CW + 1) + 1;
+          y = cell * r * (HH + 1) + 1;
+          sep.style.top = y + 'px';
+          sep.style.left = x + 'px';
+          sep.style.width = (cell * CW - 1) + "px";
+          sep.style.height = (cell * HH - 1) + "px";
+          //if (_.arg.sym_border)
+            sep.className = "border";
+
           for (rr = 0; rr < CH; rr++) {
             for (cc = 0; cc < CW; cc++) {
-              x = cell * ((1 + CW) * c + cc) + _.arg.break_size;
-              y = cell * ((1 + HH) * r + rr) + _.arg.break_size;
-              pix = document.createElement('div');
+              x = (_.arg.pixel_size + 1) * cc;
+              y = (_.arg.pixel_size + 1) * rr;
+              pix = document.createElement('i');
               pix.style.top = y + 'px';
               pix.style.left = x + 'px';
               pix.style.width = _.arg.pixel_size + 'px';
               pix.style.height = _.arg.pixel_size + 'px';
-              //pix.style.backgroundColor = _.arg.off; 
+              pix.style.margin = _.arg.break_size + "px";
               _.pix.push(pix);
-              lcd.appendChild(pix);
+              sep.appendChild(pix);
             }
           }
+          lcd.appendChild(sep);
         }
       }
 
@@ -107,6 +118,7 @@ class CharLCD {
       pix: [],
       rom: 'eu',     // codepage eu|jp|ru
       arg: {
+        sym_border: 0, //show symbol border on hover cursor
         rows: 2,     // count rows emulated LCD
         cols: 16,    // cout columns emulated LCD
         pixel_size: 3,      // user display pixels per emulated LCD pixel
@@ -120,7 +132,7 @@ class CharLCD {
     if (obj) {
       for (var key in obj) {
         if (typeof _.arg[key] != 'undefined' && _.arg[key] == parseInt(_.arg[key])) { // numeric
-          if (obj[key] == parseInt(obj[key]) && obj[key] > 0)
+          if (obj[key] == parseInt(obj[key]))
             _.arg[key] = parseInt(obj[key]);
         }
         else
@@ -132,6 +144,8 @@ class CharLCD {
         if (cpList[cpID])
           _.rom = cpID;
       }
+
+      debug(_);
     }
     if (typeof _.arg.at == 'string')
       _.arg.at = document.getElementById(_.arg.at);
