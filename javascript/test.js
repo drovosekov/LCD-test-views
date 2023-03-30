@@ -32,6 +32,7 @@ var init_complite = false;
 var copiedPanelConfig = "";
 var panels_config = {};
 var panels_obj = {};
+var menuItems = ["about", "cps", "custom_symbol", "config", "tests"];
 
 var ToolTip = (text, color_markup, repl_text) => {
     if (color_markup)
@@ -69,7 +70,7 @@ var getPanelIndex = (el) => {
 }
 
 var selMenu = (id) => {
-    ["about", "cps", "custom_symbol", "config", "tests"].forEach(element => {
+    menuItems.forEach(element => {
         $sd(element, 0);
         $ch("m_" + element, 0);
     });
@@ -95,7 +96,8 @@ var selFullViewCP = () => {
         off: $('lcd_bg_color').value,
         on: $('lcd_text_color').value,
         pixel_size: full_view_pixel,
-        break_size: full_view_brk
+        break_size: full_view_brk,
+        sym_border: $('show_hover_grid').checked ? 1 : 0
     });
     for (let i = 0; i < 16; i++) {
         for (let j = 0; j < 16; j++) {
@@ -120,7 +122,7 @@ var initFullViews = () => {
     lcd1.text(0, 0, "0123456789ABCDEF");
 
     var lcdv = new CharLCD({
-        at: 'lcdv', rows: 16, cols: 1, off: '#fff', on: '#000', sym_border: 1,
+        at: 'lcdv', rows: 16, cols: 1, off: '#fff', on: '#000',
         pixel_size: full_view_pixel, break_size: full_view_brk
     });//vertical index 
     lcdv.text(0, 0, "0\n1\n2\n3\n4\n5\n6\n7\n8\n9\nA\nB\nC\nD\nE\nF");
@@ -161,7 +163,7 @@ var addPanel = (config) => {
             on: $('lcd_text_color').value,
             pixel_size: $('px_size').value,
             break_size: $('break_size').value,
-            sym_border: 1,
+            sym_border: $('show_hover_grid').checked ? 1 : 0,
             large: $('lcd_large').checked,
             border: $('lcd_border').checked,
             content: ""
@@ -204,7 +206,8 @@ var copyPanelConfig = (el) => {
             pixel_size: $('px_size').value,
             break_size: $('break_size').value,
             large: $('lcd_large').checked,
-            border: $('lcd_border').checked
+            border: $('lcd_border').checked,
+            sym_border: $('show_hover_grid').checked ? 1 : 0
         }
         ToolTip("Global settings saved at inner variable.<br />You can past it to test panels config", "green");
     } else {
@@ -232,6 +235,7 @@ var pastPanelConfig = (el) => {
         $v('break_size', copiedPanelConfig.break_size);
         $ch('lcd_large', copiedPanelConfig.large);
         $ch('lcd_border', copiedPanelConfig.border);
+        $ch('show_hover_grid', copiedPanelConfig.show_hover_grid);
         $v('lcd_sizes', copiedPanelConfig.rows + "x" + copiedPanelConfig.cols + "x" + copiedPanelConfig.pixel_size);
 
         ToolTip("Global settings replaced with saved", "yellow");
@@ -301,6 +305,7 @@ var elSavedState = [
     { name: 'lcd_large' },
     { name: 'lcd_data' },
     { name: 'lcd_bus' },
+    { name: 'show_hover_grid' }
 ];
 
 var saveState = (selPage) => {
@@ -355,7 +360,7 @@ var initPanels = () => {
             on: "#143",
             pixel_size: 3,
             break_size: 1,
-            sym_border: 1,
+            sym_border: $('show_hover_grid').checked ? 1 : 0,
             large: 0,
             border: 1,
             content: "Test LCD Display\nEmulator HD44780"
@@ -393,17 +398,57 @@ var initCustomSymbolMatrix = () => {
     }
 }
 
+var initSwipes = () => {//TODO
+    document.addEventListener('touchstart', handleTouchStart, false);
+    document.addEventListener('touchmove', handleTouchMove, false);
+
+    var xDown = null;
+    var yDown = null;
+
+    function getTouches(evt) {
+        return evt.touches ||             // browser API
+            evt.originalEvent.touches; // jQuery
+    }
+
+    function handleTouchStart(evt) {
+        const firstTouch = getTouches(evt)[0];
+        xDown = firstTouch.clientX;
+        yDown = firstTouch.clientY;
+    };
+
+    function handleTouchMove(evt) {
+        if (!xDown || !yDown) return;
+
+        var xDiff = xDown - evt.touches[0].clientX;
+        var yDiff = yDown - evt.touches[0].clientY;
+
+        if (Math.abs(xDiff) > Math.abs(yDiff)) {/*most significant*/
+            if (xDiff > 0) {
+                /* right swipe */
+            } else {
+                /* left swipe */
+            }
+            // } else {
+            //     if (yDiff > 0) {
+            //         /* down swipe */
+            //     } else {
+            //         /* up swipe */
+            //     }
+        }
+        /* reset values */
+        xDown = null;
+        yDown = null;
+    };
+}
 
 
-window.addEventListener('DOMContentLoaded', () => {
-    loadState();
-    initFullViews();
-    initPanels();
-    initCustomSymbolMatrix();
-
-    setInterval(savePanelsState, 5000);
-    init_complite = true;
-});
+var copySymbolFromTable = () => {
+    let tbl = $('full_view_lcd');
+    $('full_view_lcd').childNodes[0].childNodes.forEach(element => {
+        debug(element.style);
+    });
+    ToolTip('Symbol config copyed. You can past it in custom symbol generator page', 'green');
+}
 
 var addCustomSymbol = () => {
 
@@ -460,7 +505,6 @@ var updateCustomSymb = () => {
     $sd("div_code", 1);
 }
 
-
 var binaryToHex = (s) => {
     var i, k, part, accum, ret = '';
     for (i = s.length - 1; i >= 3; i -= 4) {
@@ -498,3 +542,14 @@ var binaryToHex = (s) => {
     }
     return ret;
 }
+
+
+window.addEventListener('DOMContentLoaded', () => {
+    loadState();
+    initFullViews();
+    initPanels();
+    initCustomSymbolMatrix();
+
+    setInterval(savePanelsState, 5000);
+    init_complite = true;
+});

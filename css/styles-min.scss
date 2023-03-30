@@ -134,26 +134,32 @@ span.l {
 .lcd_panel {
     position: relative;
     ul {
-        position: absolute;
-        display: inline-block;
-        margin: 0;
         cursor: pointer;
-        padding: 1px; 
+        position: absolute;
+        margin: 0 0 0 -1px;
+        padding: 1px;
+        border: 1px solid rgba(0, 0, 0, 0);
     }
     i {
+        margin-left: 1px;
+        margin-top: 1px;
         position: absolute;
-        display: inline-block; 
+        padding: 0px;
+        display: inline-block;
     }
-    &:hover {
+    &:hover { 
         .border {
             border: 1px solid #444;
-            margin-left: -1px;
-            margin-top: -1px;
         }
         .border:hover {
             border: 2px solid #f00;
+            transform: scale(105%, 105%);
+            z-index: 9999;
+        }
+        .only_red_border:hover {
+            border: 2px solid #f00;
             margin-left: -2px;
-            margin-top: -2px;
+            margin-top: -1px;
         }
     }
 }
@@ -168,6 +174,8 @@ span.l {
 .panel_row {
     min-width: 200px;
     min-height: 50px;
+    max-width: 400px;
+    max-height: 200px;
 }
 
 $bg_button_off: #34495e;

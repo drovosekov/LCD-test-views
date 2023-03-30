@@ -25,8 +25,10 @@ class CharLCD {
           sep.style.left = x + 'px';
           sep.style.width = (cell * CW - 1) + "px";
           sep.style.height = (cell * HH - 1) + "px";
-          //if (_.arg.sym_border)
+          if (_.arg.sym_border)
             sep.className = "border";
+          else
+            sep.className = "only_red_border";
 
           for (rr = 0; rr < CH; rr++) {
             for (cc = 0; cc < CW; cc++) {
@@ -37,7 +39,6 @@ class CharLCD {
               pix.style.left = x + 'px';
               pix.style.width = _.arg.pixel_size + 'px';
               pix.style.height = _.arg.pixel_size + 'px';
-              pix.style.margin = _.arg.break_size + "px";
               _.pix.push(pix);
               sep.appendChild(pix);
             }
@@ -56,7 +57,7 @@ class CharLCD {
       for (var i = 0; i < CH; i++) {
         var mask = (data[i] == parseInt(data[i])) ? parseInt(data[i]) : 0;
         for (var j = 0; j < CW; j++) {
-          _.pix[offset + CW - j].style.backgroundColor = ((1 << j) & mask) ? _.arg.on : _.arg.off;
+          _.pix[offset + CW - j].style.backgroundColor = ((1 << j) & mask) ? _.arg.on : "";
         }
         offset += CW;
       }
@@ -144,8 +145,6 @@ class CharLCD {
         if (cpList[cpID])
           _.rom = cpID;
       }
-
-      debug(_);
     }
     if (typeof _.arg.at == 'string')
       _.arg.at = document.getElementById(_.arg.at);

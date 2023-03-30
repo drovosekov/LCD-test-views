@@ -80,7 +80,7 @@
                 </div>
                 <div style="display: flex;">
                     <span id='lcdv'></span>
-                    <span id='full_view_lcd'></span>
+                    <span id='full_view_lcd' onclick="copySymbolFromTable()"></span>
                 </div>
             </div>
         </div>
@@ -92,9 +92,10 @@
                 </span>
                 <span class="l">
                     <!-- <button onclick='addCustomSymbol()' disabled>Add symbol</button> -->
+                    <button onclick='pastPanelConfig("global")' title="Past panel config">▼</button>
+                    <button onclick='copyPanelConfig("global")' title="Copy panel config">▲</button>
                 </span>
             </div>
-
             <div class="card">
                 <div id="custom_template"></div>
                 <div>
@@ -214,6 +215,13 @@ void loop() { }
                             data-on='Large display'></label>
                     </div>
                 </div>
+                <div>
+                    <div class='t-cont c-flex'>
+                        <input type='checkbox' id='show_hover_grid' class='ios-toggle' onchange="selFullViewCP()" />
+                        <label for='show_hover_grid' class='chb-label' data-off="Don't show grid"
+                            data-on='Show grid on hover'></label>
+                    </div>
+                </div>
             </div>
             <div id="color" class="card">
                 <h3>Colors</h3>
@@ -242,12 +250,12 @@ void loop() { }
                 <h3>Pixels and breaks size</h3>
                 <div>
                     <span class="l">Pixel size:</span>
-                    <span class="r"><input type="number" id="px_size" value="3" min="1" max="8"
+                    <span class="r"><input type="number" id="px_size" value="3" min="2" max="8"
                             onchange="selFullViewCP()"> px</span>
                 </div>
                 <div>
                     <span class="l">Break size:</span>
-                    <span class="r"><input type="number" id="break_size" value="1" min="0" max="8"
+                    <span class="r"><input type="number" id="break_size" value="1" min="1" max="5"
                             onchange="selFullViewCP()"> px</span>
                 </div>
             </div>
