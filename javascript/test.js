@@ -261,6 +261,7 @@ var pastPanelConfig = (el) => {
             $('dot' + d).checked = code.substring(b, b + 1) == "1";
             b++;
         }
+        updateCustomSymb();
     } else {
         let id = getPanelIndex(el);
         copiedPanelConfig.id = id;
