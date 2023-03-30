@@ -445,9 +445,9 @@ var initSwipes = () => {//TODO
 var copySymbolFromTable = () => {
     let tbl = $('full_view_lcd');
     $('full_view_lcd').childNodes[0].childNodes.forEach(element => {
-        debug(element.style);
+        // debug(element.style);
     });
-    ToolTip('Symbol config copyed. You can past it in custom symbol generator page', 'green');
+    //ToolTip('Symbol config copyed. You can past it in custom symbol generator page', 'green');
 }
 
 var addCustomSymbol = () => {
