@@ -132,7 +132,7 @@ span.l {
 }
 
 .lcd_panel {
-    position: relative;
+    position: relative; 
     ul {
         cursor: pointer;
         position: absolute;
@@ -293,16 +293,18 @@ $chb_bg_color: #ddd;
     border-radius: 18px;
     background: #eee;
     box-shadow: inset 0 0 0 0 $checkbox_on_text, 0 0 0 2px $chb_bg_color;
-    cursor: pointer;
+    cursor: pointer; 
     &:before,
     &:after {
-        -webkit-transition: 0.1s ease-in-out;
-        -moz-transition: 0.1s ease-in-out;
-        -o-transition: 0.1s ease-in-out;
-        transition: 0.1s ease-in-out;
+        -webkit-transition: 0.5s ease-in-out;
+        -moz-transition: 0.5s ease-in-out;
+        -o-transition: 0.5s ease-in-out;
+        transition: 0.5s ease-in-out;
         display: block;
         position: absolute;
         text-align: right;
+        pointer-events: none;
+        height: 36px;
     }
     &:before {
         content: " ";
@@ -310,24 +312,22 @@ $chb_bg_color: #ddd;
         line-height: 34px;
         text-indent: 40px;
         left: 0;
-        height: 36px;
         width: 36px;
         border-radius: 100%;
         top: 0;
         right: auto;
         background: #fff;
-        box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2), 0 0 0 2px $chb_bg_color;
+        box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2), 0 0 0 2px $chb_bg_color; 
     }
-    &:after {
-        -webkit-transition: 0.1s ease-in-out;
-        -moz-transition: 0.1s ease-in-out;
-        -o-transition: 0.1s ease-in-out;
-        transition: 0.1s ease-in-out;
+    &:after {   
+        // -webkit-transition: 0.2s ease-in-out;
+        // -moz-transition: 0.2s ease-in-out;
+        // -o-transition: 0.2s ease-in-out;
+        // transition: 0.2s ease-in-out;
         content: attr(data-off);
         z-index: 0;
         left: -140px;
-        padding: 10px;
-        height: 20px;
+        padding: 10px; 
         width: 120px;
         color: $checkbox_off_text;
         white-space: nowrap;

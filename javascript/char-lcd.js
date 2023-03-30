@@ -2,8 +2,6 @@ const CW = 5;  // charachter width
 const CH = 8;  // character height
 const CL = 10; // large character height
 
-const brkGrid = "#444";
-
 class CharLCD {
   constructor(obj) {
     var createAt = (_) => {
@@ -114,6 +112,10 @@ class CharLCD {
       _.font[n] = data;
     }
 
+    var getSymbolByIndex = (font, index) => {
+      return font[index];
+    }
+
     var _ = {
       font: {},
       pix: [],
@@ -154,6 +156,7 @@ class CharLCD {
     this.char = (r, c, ch) => { char(_, r, c, ch); };
     this.text = (r, c, str) => { text(_, r, c, str); };
     this.font = (n, data) => { font(_, n, data); };
+    this.getSymbolByIndex = (index) => { return getSymbolByIndex(cpList[_.rom].font, index); };
   }
 }
 

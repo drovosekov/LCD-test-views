@@ -1,6 +1,6 @@
 "use strict"; // Turns on strict mode for this compilation unit
 const mis = "missed id: ";
-var debug = (v) => { window.console.log(v) }
+var debug = (v) => { if (typeof (v) == "object") v = JSON.stringify(v); window.console.log(v) }
 var $$ = (id) => { return document.getElementById(id) }
 var $n = (id) => { return document.getElementsByName(id)[0] }
 var $ = (id) => { if ($$(id)) return $$(id); else return $n(id) }
@@ -28,26 +28,32 @@ const full_view_pixel = 3;
 const full_view_brk = 1;
 const tipDuration = '5000';   // duration of the info notification in ms 
 
+var full_view_lcd;
+var symbol_code = {};
 var init_complite = false;
 var copiedPanelConfig = "";
 var panels_config = {};
 var panels_obj = {};
 var menuItems = ["about", "cps", "custom_symbol", "config", "tests"];
 
+var ToolTipText;
 var ToolTip = (text, color_markup, repl_text) => {
     if (color_markup)
         color_markup = ' alert-' + color_markup;
 
+    text = text.replace("%v", repl_text);
+    if (ToolTipText == text) return;
     var tipBlock = document.createElement('div');
     tipBlock.className = 'alert' + color_markup;
-    tipBlock.innerHTML = text.replace("%v", repl_text);
+    tipBlock.innerHTML = text;
+    ToolTipText = text;
 
     $("ohsnap").appendChild(tipBlock);
 
     var ohSnapX = (element) => {
-        if (element) {
+        if (element)
             element.remove();
-        }
+        ToolTipText = "";
     }
 
     tipBlock.onclick = () => {
@@ -88,7 +94,7 @@ var selStndLCDSize = (val) => {
 
 var selFullViewCP = () => {
     $h('full_view_lcd', '');
-    let full_view_lcd = new CharLCD({
+    full_view_lcd = new CharLCD({
         at: 'full_view_lcd',
         rows: 16,
         cols: 16,
@@ -207,9 +213,11 @@ var copyPanelConfig = (el) => {
             break_size: $('break_size').value,
             large: $('lcd_large').checked,
             border: $('lcd_border').checked,
-            sym_border: $('show_hover_grid').checked ? 1 : 0
+            show_hover_grid: $('show_hover_grid').checked ? 1 : 0
         }
         ToolTip("Global settings saved at inner variable.<br />You can past it to test panels config", "green");
+    } else if (el == "symbol") {
+
     } else {
         let id = getPanelIndex(el);
         if (!id) return;
@@ -220,7 +228,7 @@ var copyPanelConfig = (el) => {
 }
 
 var pastPanelConfig = (el) => {
-    if (typeof copiedPanelConfig.rom != 'string') {
+    if (typeof copiedPanelConfig.rom != 'string' && el != "symbol") {
         ToolTip("Error: empty config", "red");
         return;
     }
@@ -239,6 +247,20 @@ var pastPanelConfig = (el) => {
         $v('lcd_sizes', copiedPanelConfig.rows + "x" + copiedPanelConfig.cols + "x" + copiedPanelConfig.pixel_size);
 
         ToolTip("Global settings replaced with saved", "yellow");
+    } else if (el == "symbol") {
+        let rowIdx = 0;
+        let code;
+        let b = 0;
+        for (let d = 0; d < 40; d++) {
+            if (d % 5 == 0) {
+                code = "00000" + decimalToBin(symbol_code[rowIdx]);
+                code = code.substring(code.length - 5, code.length);
+                rowIdx++;
+                b = 0;
+            }
+            $('dot' + d).checked = code.substring(b, b + 1) == "1";
+            b++;
+        }
     } else {
         let id = getPanelIndex(el);
         copiedPanelConfig.id = id;
@@ -441,13 +463,17 @@ var initSwipes = () => {//TODO
     };
 }
 
-
 var copySymbolFromTable = () => {
-    let tbl = $('full_view_lcd');
-    $('full_view_lcd').childNodes[0].childNodes.forEach(element => {
-        // debug(element.style);
-    });
-    //ToolTip('Symbol config copyed. You can past it in custom symbol generator page', 'green');
+    var hoveredElement = $qs('ul:hover');
+    hoveredElement = hoveredElement[hoveredElement.length - 1];
+    if (!hoveredElement) return;
+    let st = hoveredElement.style;
+    let col = parseInt((parseInt(st.left) - 1) / 24);
+    let row = parseInt((parseInt(st.top) - 1) / 36);
+    let index = row * 16 + col;
+    symbol_code = full_view_lcd.getSymbolByIndex(index);
+    debug(index + ": " + symbol_code);
+    ToolTip('Symbol config copyed. You can past it in custom symbol generator page', 'green');
 }
 
 var addCustomSymbol = () => {
@@ -486,10 +512,11 @@ var updateCustomSymb = () => {
 
     let rowIdx = 0;
     let rowByte = "";
+    let hex = $('lcd_data').checked;
     for (let d = 0; d <= 40; d++) {
         if (d > 0 && d % 5 == 0) {
             rowIdx++;
-            if ($('lcd_data').checked)
+            if (hex)
                 rowByte = "0x" + binaryToHex(rowByte);
             else
                 rowByte = "B" + rowByte;
@@ -512,10 +539,7 @@ var binaryToHex = (s) => {
         part = s.substr(i + 1 - 4, 4);
         accum = 0;
         for (k = 0; k < 4; k += 1) {
-            if (part[k] !== '0' && part[k] !== '1') {
-                // invalid character
-                return { valid: false };
-            }
+            if (part[k] !== '0' && part[k] !== '1') return;// invalid character 
             // compute the length 4 substring
             accum = accum * 2 + parseInt(part[k], 10);
         }
@@ -532,9 +556,7 @@ var binaryToHex = (s) => {
         accum = 0;
         // convert from front
         for (k = 0; k <= i; k += 1) {
-            if (s[k] !== '0' && s[k] !== '1') {
-                return { valid: false };
-            }
+            if (s[k] !== '0' && s[k] !== '1') return;
             accum = accum * 2 + parseInt(s[k], 10);
         }
         // 3 bits, value cannot exceed 2^3 - 1 = 7, just convert
@@ -542,13 +564,23 @@ var binaryToHex = (s) => {
     }
     return ret;
 }
-
+var decimalToBin = (number) => {
+    let num = number;
+    let binary = (num % 2).toString();
+    for (; num > 1;) {
+        num = parseInt(num / 2);
+        binary = (num % 2) + (binary);
+    }
+    debug(binary);
+    return binary;
+}
 
 window.addEventListener('DOMContentLoaded', () => {
     loadState();
     initFullViews();
     initPanels();
     initCustomSymbolMatrix();
+    // initTableCoord();
 
     setInterval(savePanelsState, 5000);
     init_complite = true;

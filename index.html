@@ -92,8 +92,8 @@
                 </span>
                 <span class="l">
                     <!-- <button onclick='addCustomSymbol()' disabled>Add symbol</button> -->
-                    <button onclick='pastPanelConfig("global")' title="Past panel config">▼</button>
-                    <button onclick='copyPanelConfig("global")' title="Copy panel config">▲</button>
+                    <button onclick='pastPanelConfig("symbol")' title="Past panel config">▼</button>
+                    <button onclick='copyPanelConfig("symbol")' title="Copy panel config">▲</button>
                 </span>
             </div>
             <div class="card">
@@ -140,7 +140,7 @@ LiquidCrystal lcd(12, 11, 5, 4,  3,  2);{/parallel_bus}{I2C_bus}#include &lt;Wir
 //1-wire bus--------->address 
 LiquidCrystal_I2C lcd(0x3F, {columns}, {rows});{/I2C_bus}
 {customCharArrays}
-uint8_t customChar[] = {
+uint8_t customChar[0][8] = {
     {row1},
     {row2},
     {row3},
@@ -153,7 +153,7 @@ uint8_t customChar[] = {
 {/customCharArrays}
 void setup() {
     {I2C_bus}lcd.begin();{/I2C_bus}{parallel_bus}lcd.begin({columns}, {rows});{/parallel_bus}
-    lcd.createChar(0, customChar);
+    lcd.createChar(0, customChar[0]);
     lcd.home();
     lcd.write(0);
 }
