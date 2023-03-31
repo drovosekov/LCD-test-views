@@ -112,8 +112,8 @@ class CharLCD {
       _.font[n] = data;
     }
 
-    var getSymbolByIndex = (font, index) => {
-      return font[index];
+    var getSymbolByIndex = (_, x) => {
+      return _.font[x] ? _.font[x] : cpList[_.rom].font[x];
     }
 
     var _ = {
@@ -156,14 +156,14 @@ class CharLCD {
     this.char = (r, c, ch) => { char(_, r, c, ch); };
     this.text = (r, c, str) => { text(_, r, c, str); };
     this.font = (n, data) => { font(_, n, data); };
-    this.getSymbolByIndex = (index) => { return getSymbolByIndex(cpList[_.rom].font, index); };
+    this.getSymbolByIndex = (index) => { return getSymbolByIndex(_, index); };
   }
 }
 
 /* Codepage tables */
 
 var _jp = {
-  name: "Japan CP",
+  name: "Japan",
   font: [
     [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [],
     [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [],
@@ -417,7 +417,7 @@ var _jp = {
 };
 
 var _eu = {
-  name: "Eng CP",
+  name: "Eng",
   font: [
     [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [],
     [0, 8, 12, 14, 15, 14, 12, 8], // |>
@@ -690,7 +690,7 @@ var _eu = {
 };
 
 var _ru = {
-  name: "Rus CP",
+  name: "Rus",
   font: [
     [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [],
     [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [],

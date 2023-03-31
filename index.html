@@ -134,8 +134,7 @@
 
 //parallel bus
 //pinout--------> RS, E, D4, D5, D6, D7
-LiquidCrystal lcd(12, 11, 5, 4,  3,  2);{/parallel_bus}{I2C_bus}#include &lt;Wire.h&gt;
-#include &lt;LiquidCrystal_I2C.h&gt;
+LiquidCrystal lcd(12, 11, 5, 4,  3,  2);{/parallel_bus}{I2C_bus}#include &lt;LiquidCrystal_I2C.h&gt;
 
 //1-wire bus--------->address 
 LiquidCrystal_I2C lcd(0x3F, {columns}, {rows});{/I2C_bus}
@@ -152,7 +151,7 @@ uint8_t customChar[0][8] = {
 };
 {/customCharArrays}
 void setup() {
-    {I2C_bus}lcd.begin();{/I2C_bus}{parallel_bus}lcd.begin({columns}, {rows});{/parallel_bus}
+    {I2C_bus}lcd.init();{/I2C_bus}{parallel_bus}lcd.begin({columns}, {rows});{/parallel_bus}
     lcd.createChar(0, customChar[0]);
     lcd.home();
     lcd.write(0);
