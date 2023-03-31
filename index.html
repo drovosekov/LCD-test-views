@@ -97,7 +97,7 @@
                 </span>
             </div>
             <div class="card">
-                <div id="custom_template"></div>
+                <div id="custom_symbols_panel"></div>
                 <div>
                     <span class="r">
                         <div id="custom_symb_matrix"></div>
@@ -133,13 +133,13 @@
 {parallel_bus}#include &lt;LiquidCrystal.h&gt;
 
 //parallel bus
-//pinout--------> RS, E, D4, D5, D6, D7
-LiquidCrystal lcd(12, 11, 5, 4,  3,  2);{/parallel_bus}{I2C_bus}#include &lt;LiquidCrystal_I2C.h&gt;
+const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);{/parallel_bus}{I2C_bus}#include &lt;LiquidCrystal_I2C.h&gt;
 
 //1-wire bus--------->address 
 LiquidCrystal_I2C lcd(0x3F, {columns}, {rows});{/I2C_bus}
 {customCharArrays}
-uint8_t customChar[0][8] = {
+byte customChar[0][8] = {
     {row1},
     {row2},
     {row3},

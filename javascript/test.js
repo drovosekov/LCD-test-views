@@ -29,6 +29,7 @@ const full_view_brk = 1;
 const tipDuration = '5000';   // duration of the info notification in ms 
 
 var full_view_lcd;
+var CustomSymbolsPanel;
 var symbol_code = {};
 var init_complite = false;
 var copiedPanelConfig = "";
@@ -217,7 +218,7 @@ var copyPanelConfig = (el) => {
         }
         ToolTip("Global settings saved at inner variable.<br />You can past it to test panels config", "green");
     } else if (el == "symbol") {
-
+        ToolTip("under construction...", "red");
     } else {
         let id = getPanelIndex(el);
         if (!id) return;
@@ -421,6 +422,24 @@ var initCustomSymbolMatrix = () => {
     }
 }
 
+var initCustomSymbolsPanel = () => {
+    $h('custom_symbols_panel', '');
+    CustomSymbolsPanel = new CharLCD({
+        at: 'custom_symbols_panel',
+        rows: 1,
+        cols: 8,
+        rom: $('full_view_cp').value,
+        off: $('lcd_bg_color').value,
+        on: $('lcd_text_color').value,
+        pixel_size: full_view_pixel,
+        break_size: full_view_brk,
+        sym_border: $('show_hover_grid').checked ? 1 : 0
+    });
+    for (let i = 0; i < 8; i++) {
+
+    }
+}
+
 var initSwipes = () => {//TODO
     document.addEventListener('touchstart', handleTouchStart, false);
     document.addEventListener('touchmove', handleTouchMove, false);
@@ -514,19 +533,26 @@ var updateCustomSymb = () => {
     let rowIdx = 0;
     let rowByte = "";
     let hex = $('lcd_data').checked;
+    let charUpload = "[";
     for (let d = 0; d <= 40; d++) {
         if (d > 0 && d % 5 == 0) {
             rowIdx++;
+            charUpload += parseInt(rowByte, 2);
             if (hex)
                 rowByte = "0x" + binaryToHex(rowByte);
             else
-                rowByte = "B" + rowByte;
+                rowByte = "0b" + rowByte;
+
             code = code.replace("{row" + rowIdx + "}", rowByte);
             if (d == 40) break;
+            else charUpload += ",";
             rowByte = "";
         }
         rowByte += $('dot' + d).checked ? "1" : "0";
     }
+    charUpload += "]";
+    CustomSymbolsPanel.font(0, JSON.parse(charUpload));
+    CustomSymbolsPanel.char(0, 0, "\0");
     code = code.replace(/({customCharArrays}|{\/customCharArrays})/g, "");
 
     $('custom_sym_code').innerHTML = Prism.highlight(code, Prism.languages.cpp, 'cpp');
@@ -581,6 +607,7 @@ window.addEventListener('DOMContentLoaded', () => {
     initFullViews();
     initPanels();
     initCustomSymbolMatrix();
+    initCustomSymbolsPanel();
     // initTableCoord();
 
     setInterval(savePanelsState, 5000);
