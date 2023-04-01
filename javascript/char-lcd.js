@@ -10,14 +10,14 @@ class CharLCD {
       var HH = _.arg.large ? CL : CH;
       var lcd = document.createElement('div');
       lcd.className = "lcd_panel";
-      lcd.style.width = (cell * (1 + CW) * _.arg.cols - 1) + 'px';
-      lcd.style.height = (cell * (1 + HH) * _.arg.rows - 1) + 'px';
+      lcd.style.width = (cell * (1 + CW) * _.arg.cols) + 'px';
+      lcd.style.height = (cell * (1 + HH) * _.arg.rows) + 'px';
       lcd.style.backgroundColor = _.arg.off;
 
       for (r = 0; r < _.arg.rows; r++) {
         for (c = 0; c < _.arg.cols; c++) {
           let sep = document.createElement('ul');
-          x = cell * c * (CW + 1) + 1;
+          x = cell * c * (CW + 1) + 2;
           y = cell * r * (HH + 1) + 1;
           sep.style.top = y + 'px';
           sep.style.left = x + 'px';
@@ -44,7 +44,7 @@ class CharLCD {
           lcd.appendChild(sep);
         }
       }
-
+      _.arg.at.innerHTML = '';
       _.arg.at.appendChild(lcd);
     }
 
@@ -62,6 +62,7 @@ class CharLCD {
     }
 
     var char = (_, r, c, ch) => {
+      if (!_.font || !ch) return;
       var x = ch.charCodeAt(0);
       set(_, r, c, _.font[x] ? _.font[x] : cpList[_.rom].font[x]);
     }
@@ -83,7 +84,7 @@ class CharLCD {
             k = str[i] ? str.charCodeAt(i) : 0;
             x = 0x10000 + (x - 0xd800) * 0x400 + (k - 0xdc00);
           }
-          if (cpList[_.rom].cmap[x]) x = cpList[_.rom].cmap[x];
+          if (cpList[_.rom].cmap && cpList[_.rom].cmap[x]) x = cpList[_.rom].cmap[x];
           if (x instanceof Array) {
             for (k = 0; k < x.length; k++) {
               char(_, r, c, String.fromCharCode(x[k]));
@@ -109,15 +110,22 @@ class CharLCD {
     }
 
     var font = (_, n, data) => {
-      _.font[n] = data;
+      if (data && n) {
+        if (!_.font) _.font = [];
+        _.font[n] = data;
+      }
     }
 
-    var getSymbolByIndex = (_, x) => {
+    var getSymbolByIndex = (_, x, custom) => {
+      if (!_.font[x] && custom) {
+        debug("getSymbolByIndex error: unset attr");
+        return null;
+      }
       return _.font[x] ? _.font[x] : cpList[_.rom].font[x];
     }
 
     var _ = {
-      font: {},
+      font: [],
       pix: [],
       rom: 'eu',     // codepage eu|jp|ru
       arg: {
@@ -156,12 +164,15 @@ class CharLCD {
     this.char = (r, c, ch) => { char(_, r, c, ch); };
     this.text = (r, c, str) => { text(_, r, c, str); };
     this.font = (n, data) => { font(_, n, data); };
-    this.getSymbolByIndex = (index) => { return getSymbolByIndex(_, index); };
+    this.getSymbolByIndex = (index, custom = false) => { return getSymbolByIndex(_, index, custom); };
+    this.param = {
+      get font() { return _.font; },
+      set font(f) { _.font = f },
+    };
   }
 }
 
 /* Codepage tables */
-
 var _jp = {
   name: "Japan",
   font: [
@@ -983,6 +994,7 @@ var _ru = {
 var _patterns = {
   name: "Patterns",
   font: [
+    [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [],
     [14, 27, 27, 31, 27, 27, 27], // A
     [30, 27, 27, 30, 27, 27, 30],//B
     [14, 27, 24, 24, 24, 27, 14],//C

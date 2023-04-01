@@ -6,12 +6,12 @@
     <title>LCD test view</title>
     <meta name="viewport" content="width=device-width,initial-scale=0.7,user-scalable=no">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <script src="javascript/char-lcd.js"></script>
-    <script src="javascript/test.js"></script>
-    <script src="javascript/prism.js"></script>
     <link rel='stylesheet' href='css/styles-min.css'>
     <link rel='stylesheet' href='css/ohsnap-min.css'>
     <link rel='stylesheet' href='css/prism.css'>
+    <script src="javascript/char-lcd.js"></script>
+    <script src="javascript/prism-min.js"></script>
+    <script src="javascript/test.js"></script>
     <link rel="shortcut icon" type="image/icon" href="img/favicon.ico" id="favicon" />
 </head>
 
@@ -80,7 +80,7 @@
                 </div>
                 <div style="display: flex;">
                     <span id='lcdv'></span>
-                    <span id='full_view_lcd' onclick="copySymbolFromTable()"></span>
+                    <span id='full_view_lcd' onclick="selSymbol('cps')"></span>
                 </div>
             </div>
         </div>
@@ -90,21 +90,39 @@
                 <span class="r">
                     <h3>Custom symbol generator</h3>
                 </span>
-                <span class="l">
-                    <!-- <button onclick='addCustomSymbol()' disabled>Add symbol</button> -->
-                    <button onclick='pastPanelConfig("symbol")' title="Past panel config">▼</button>
-                    <button onclick='copyPanelConfig("symbol")' title="Copy panel config">▲</button>
-                </span>
             </div>
             <div class="card">
-                <div id="custom_symbols_panel"></div>
+                <div>
+                    <span class="r">
+                        <div id="custom_symbols_panel" onclick="selSymbol('custom_sym')"></div>
+                    </span>
+                    <span>
+                        <button onclick='clearCustomPanel()' title="Clear all custom symbols">X</button>
+                    </span>
+                    <span class="l">
+                        Selected:
+                        <select id="currentSymbolIndex" onchange="selSymbol('selCustomSymbolIndex')">
+                            <option value="0">1</option>
+                            <option value="1">2</option>
+                            <option value="2">3</option>
+                            <option value="3">4</option>
+                            <option value="4">5</option>
+                            <option value="5">6</option>
+                            <option value="6">7</option>
+                            <option value="7">8</option>
+                        </select>
+                        <button onclick='pastPanelConfig("CustomSymbol")' title="Past symbol config">▼</button>
+                        <button onclick='copyPanelConfig("CustomSymbol")' title="Copy symbol config">▲</button>
+                    </span>
+                </div>
+
                 <div>
                     <span class="r">
                         <div id="custom_symb_matrix"></div>
                     </span>
                     <span class="l">
                         <div>
-                            <button class="button" onclick='clearCustomSymb()'>All off</button>
+                            <button class="button" onclick='allOffCustomSymb()'>All off</button>
                         </div>
                         <div>
                             <button class="button" onclick='allOnCustomSymb()'>All on</button>
@@ -120,10 +138,17 @@
                         </div>
                         <div>
                             <div class='t-cont c-flex'>
-                                <input type='checkbox' id='lcd_data' class='ios-toggle' onchange="updateCustomSymb()" />
-                                <label for='lcd_data' class='chb-label' data-off='Binary data'
-                                    data-on='Hex data'></label>
+                                <input type='checkbox' id='code_gen' class='ios-toggle' onchange="updateCustomSymb()" />
+                                <label for='code_gen' class='chb-label' data-off='Data only'
+                                    data-on='Full code'></label>
                             </div>
+                        </div>
+                        <div>
+                            <select id="symbols_data_type" onchange="updateCustomSymb()">
+                                <option value="bin">Binary</option>
+                                <option value="dec">Decimal</option>
+                                <option value="hex">Hex</option>
+                            </select>
                         </div>
                     </span>
                 </div>
@@ -139,22 +164,17 @@ LiquidCrystal lcd(rs, en, d4, d5, d6, d7);{/parallel_bus}{I2C_bus}#include &lt;L
 //1-wire bus--------->address 
 LiquidCrystal_I2C lcd(0x3F, {columns}, {rows});{/I2C_bus}
 {customCharArrays}
-byte customChar[0][8] = {
-    {row1},
-    {row2},
-    {row3},
-    {row4},
-    {row5},
-    {row6},
-    {row7},
-    {row8}
+uint8_t customChar{char_index}[8] PROGMEM = {
+    {symbol_data}
 };
 {/customCharArrays}
 void setup() {
     {I2C_bus}lcd.init();{/I2C_bus}{parallel_bus}lcd.begin({columns}, {rows});{/parallel_bus}
-    lcd.createChar(0, customChar[0]);
-    lcd.home();
-    lcd.write(0);
+    {loadChar}lcd.createChar({char_index}, customChar{char_index});
+    {/loadChar}lcd.home();
+    for (uint8_t i = 0; i &lt; {chars_count}; i++) {
+        lcd.write(i);
+    }
 }
 
 void loop() { }
@@ -267,6 +287,9 @@ void loop() { }
                 <span class="r">
                     <h1>Test views</h1>
                 </span>
+                <span class="l">
+                    <div id="tst_custom_symbols_panel" onclick="selSymbol('tst_custom_sym')"></div>
+                </span>
             </div>
 
             <div id="panels" class="block"></div>
@@ -285,8 +308,8 @@ void loop() { }
             <h2 onclick="editPanelName(this)" id="panel_name_{id}">{PanelName}</h2>
         </span>
         <span class="l">
-            <button onclick='pastPanelConfig(this)' title="Past panel config">▼</button>
-            <button onclick='copyPanelConfig(this)' title="Copy panel config">▲</button>
+            <button onclick='pastPanelConfig("panel", this)' title="Past panel config">▼</button>
+            <button onclick='copyPanelConfig("config", this)' title="Copy panel config">▲</button>
             <button onclick='collapsePanel(this)' title="Collapse panel" id="min_panel_{id}">_</button>
             <button onclick='delPanel(this)' title="Delete panel">X</button>
         </span>
@@ -297,7 +320,8 @@ void loop() { }
                 <div class="desc" id="panel_info_{id}">panel info</div>
             </span>
             <span class="rl">
-                <textarea rows="2" cols="16" class="panel_row" onkeyup="updatePanel(this)">{text}</textarea>
+                <textarea rows="2" cols="16" class="panel_row" id="text_{id}"
+                    onkeyup="updatePanel(this)">{text}</textarea>
             </span>
         </div>
         <span class="r"></span>

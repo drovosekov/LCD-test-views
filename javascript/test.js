@@ -30,12 +30,27 @@ const tipDuration = '5000';   // duration of the info notification in ms
 
 var full_view_lcd;
 var CustomSymbolsPanel;
-var symbol_code = {};
+var symbol_code;
 var init_complite = false;
 var copiedPanelConfig = "";
 var panels_config = {};
 var panels_obj = {};
 var menuItems = ["about", "cps", "custom_symbol", "config", "tests"];
+var elSavedState = [
+    { name: 'full_view_cp', defvalue: 'eu' },
+    { name: 'rows', defvalue: 2 },
+    { name: 'columns', defvalue: 16 },
+    { name: 'px_size', defvalue: 3 },
+    { name: 'break_size', defvalue: 1 },
+    { name: 'lcd_bg_color', defvalue: '#cd2' },
+    { name: 'lcd_text_color', defvalue: '#143' },
+    { name: 'lcd_border' },
+    { name: 'lcd_large' },
+    { name: 'symbols_data_type' },
+    { name: 'lcd_bus' },
+    { name: 'code_gen' },
+    { name: 'show_hover_grid' }
+];
 
 var ToolTipText;
 var ToolTip = (text, color_markup, repl_text) => {
@@ -94,7 +109,6 @@ var selStndLCDSize = (val) => {
 }
 
 var selFullViewCP = () => {
-    $h('full_view_lcd', '');
     full_view_lcd = new CharLCD({
         at: 'full_view_lcd',
         rows: 16,
@@ -181,7 +195,7 @@ var addPanel = (config) => {
     newPanel.className = "card test_panel";
     newPanel.id = "lcd_" + config.id;
     newPanel.innerHTML = $("panel_template").innerHTML.replace("{text}", config.content).replace("{PanelName}", config.name).replace(/{id}/g, config.id);
-    $("panels").appendChild(newPanel)
+    $("panels").appendChild(newPanel);
 
     panels_config[config.id] = config;
     createNewPanel(config);
@@ -192,6 +206,7 @@ var addPanel = (config) => {
     savePanelsState();
 
     $(newPanel.id).scrollIntoView();
+    $("text_" + config.id).focus();
 }
 
 var updatePanel = (p) => {
@@ -202,8 +217,8 @@ var updatePanel = (p) => {
     // savePanelsState();
 }
 
-var copyPanelConfig = (el) => {
-    if (el == "global") {
+var copyPanelConfig = (type, el) => {
+    if (type == "global") {
         copiedPanelConfig = {
             rows: $('rows').value,
             cols: $('columns').value,
@@ -214,27 +229,26 @@ var copyPanelConfig = (el) => {
             break_size: $('break_size').value,
             large: $('lcd_large').checked,
             border: $('lcd_border').checked,
-            show_hover_grid: $('show_hover_grid').checked ? 1 : 0
+            sym_border: $('show_hover_grid').checked ? 1 : 0
         }
         ToolTip("Global settings saved at inner variable.<br />You can past it to test panels config", "green");
-    } else if (el == "symbol") {
-        ToolTip("under construction...", "red");
-    } else {
+    } else if (type == "CustomSymbol") {
+        symbol_code = CustomSymbolsPanel.getSymbolByIndex($('currentSymbolIndex').value);
+        ToolTip("Custom symbol saved at innet variable", "green");
+    } else if (type == "config") {
         let id = getPanelIndex(el);
         if (!id) return;
         copiedPanelConfig = panels_config[id];
         ToolTip("Panel config saved at inner variable.<br />Past it to other panel config or gloabal settings", "green");
     }
-    debug(copiedPanelConfig);
 }
 
-var pastPanelConfig = (el) => {
-    if (typeof copiedPanelConfig.rom != 'string' && el != "symbol") {
-        ToolTip("Error: empty config", "red");
-        return;
-    }
-
-    if (el == "global") {
+var pastPanelConfig = (type, el, data) => {
+    if (type == "global") {
+        if (typeof copiedPanelConfig.rom != 'string') {
+            ToolTip("Error: empty config", "red");
+            return;
+        }
         $v('rows', copiedPanelConfig.rows);
         $v('columns', copiedPanelConfig.cols);
         $v('full_view_cp', copiedPanelConfig.rom);
@@ -248,13 +262,19 @@ var pastPanelConfig = (el) => {
         $v('lcd_sizes', copiedPanelConfig.rows + "x" + copiedPanelConfig.cols + "x" + copiedPanelConfig.pixel_size);
 
         ToolTip("Global settings replaced with saved", "yellow");
-    } else if (el == "symbol") {
+    } else if (type == "CustomSymbol") {
+        if (!data && !symbol_code && init_complite) {
+            ToolTip("Error: empty symbol code", "red");
+            return;
+        }
+        if (!data) data = symbol_code;
+        if (!data) return;
         let rowIdx = 0;
         let code;
         let b = 0;
         for (let d = 0; d < 40; d++) {
             if (d % 5 == 0) {
-                code = "00000" + decimalToBin(symbol_code[rowIdx]);
+                code = "00000" + dec2bin(data[rowIdx]);
                 code = code.substring(code.length - 5, code.length);
                 rowIdx++;
                 b = 0;
@@ -263,14 +283,17 @@ var pastPanelConfig = (el) => {
             b++;
         }
         updateCustomSymb();
-    } else {
+    } else if (type == "panel") {
+        if (typeof copiedPanelConfig.rom != 'string') {
+            ToolTip("Error: empty config", "red");
+            return;
+        }
         let id = getPanelIndex(el);
         copiedPanelConfig.id = id;
         copiedPanelConfig.at = "panel_" + id;
         copiedPanelConfig.content = panels_config[id].content;
         if (!copiedPanelConfig.name) copiedPanelConfig.name = panels_config[id].name;
         panels_config[id] = copiedPanelConfig;
-        $h("panel_" + id, '');
         createNewPanel(copiedPanelConfig);
         setPanelInfoText(copiedPanelConfig);
 
@@ -317,21 +340,6 @@ var delPanel = (el) => {
     }
 }
 
-var elSavedState = [
-    { name: 'full_view_cp', defvalue: 'eu' },
-    { name: 'rows', defvalue: 2 },
-    { name: 'columns', defvalue: 16 },
-    { name: 'px_size', defvalue: 3 },
-    { name: 'break_size', defvalue: 1 },
-    { name: 'lcd_bg_color', defvalue: '#cd2' },
-    { name: 'lcd_text_color', defvalue: '#143' },
-    { name: 'lcd_border' },
-    { name: 'lcd_large' },
-    { name: 'lcd_data' },
-    { name: 'lcd_bus' },
-    { name: 'show_hover_grid' }
-];
-
 var saveState = (selPage) => {
     if (!init_complite)
         return;
@@ -343,10 +351,11 @@ var saveState = (selPage) => {
             localStorage.setItem('LCDtest_' + element.name, $(element.name).value);
     });
     if (selPage)
-        localStorage.setItem('SelPage', selPage);
+        localStorage.setItem('LCDtest_SelPage', selPage);
 }
 
 var loadState = () => {
+    selMenu(localStorage.getItem('LCDtest_SelPage') || 'about');
     elSavedState.forEach(element => {
         if ($(element.name).type == 'checkbox') {
             $ch(element.name, localStorage.getItem('LCDtest_' + element.name));
@@ -361,12 +370,12 @@ var loadState = () => {
     $v('lcd_sizes', $('rows').value + "x" + $('columns').value + "x" + $('px_size').value);
     if (!$('lcd_sizes').value)
         $v('lcd_sizes', "---");
-    selMenu(localStorage.getItem('SelPage') || 'full_page');
 }
 
 var savePanelsState = () => {
-    if (init_complite)
+    if (init_complite) {
         localStorage.setItem('LCDtest_Panels_config', JSON.stringify(panels_config));
+    }
 }
 
 var initPanels = () => {
@@ -423,7 +432,6 @@ var initCustomSymbolMatrix = () => {
 }
 
 var initCustomSymbolsPanel = () => {
-    $h('custom_symbols_panel', '');
     CustomSymbolsPanel = new CharLCD({
         at: 'custom_symbols_panel',
         rows: 1,
@@ -435,9 +443,11 @@ var initCustomSymbolsPanel = () => {
         break_size: full_view_brk,
         sym_border: $('show_hover_grid').checked ? 1 : 0
     });
-    for (let i = 0; i < 8; i++) {
-
-    }
+    let font = JSON.parse(localStorage.getItem('LCDtest_CustomSymbolsFont') || "[]");
+    CustomSymbolsPanel.param.font = font;
+    for (let f = 0; f < font.length; f++)
+        if (font[f] && font[f] != null)
+            CustomSymbolsPanel.char(0, f, String.fromCharCode(f));
 }
 
 var initSwipes = () => {//TODO
@@ -483,7 +493,17 @@ var initSwipes = () => {//TODO
     };
 }
 
-var copySymbolFromTable = () => {
+var selSymbol = (func) => {
+    let setCustomSymbolMatrix = (index) => {
+        $('currentSymbolIndex').value = index;
+        let customSymb = CustomSymbolsPanel.getSymbolByIndex(index, true);
+        if (!customSymb && customSymb == null) customSymb = [];
+        pastPanelConfig('CustomSymbol', null, customSymb);
+    }
+    if (func == "selCustomSymbolIndex") {
+        setCustomSymbolMatrix($('currentSymbolIndex').value);
+        return;
+    }
     var hoveredElement = $qs('ul:hover');
     hoveredElement = hoveredElement[hoveredElement.length - 1];
     if (!hoveredElement) return;
@@ -491,16 +511,22 @@ var copySymbolFromTable = () => {
     let col = parseInt((parseInt(st.left) - 1) / 24);
     let row = parseInt((parseInt(st.top) - 1) / 36);
     let index = row * 16 + col;
-    symbol_code = full_view_lcd.getSymbolByIndex(index);
-    debug(index + ": " + symbol_code);
-    ToolTip('Symbol config copyed. You can past it in custom symbol generator page', 'green');
+    if (func == "cps") {
+        symbol_code = full_view_lcd.getSymbolByIndex(index);
+        ToolTip('Symbol config copyed. You can past it in custom symbol generator page', 'green');
+    } else if (func = "custom_sym") {
+        setCustomSymbolMatrix(index);
+    }
 }
 
-var addCustomSymbol = () => {
-
+var clearCustomPanel = () => {
+    if (!window.confirm("Clear all custom symbols?")) return;
+    CustomSymbolsPanel.param.font = [];
+    for (let f = 0; f < 8; f++)
+        CustomSymbolsPanel.set(0, f);
 }
 
-var clearCustomSymb = () => {
+var allOffCustomSymb = () => {
     for (let d = 0; d < 40; d++) {
         $("dot" + d).checked = "";
     }
@@ -522,28 +548,24 @@ var invertCustomSymb = () => {
 }
 
 var updateCustomSymb = () => {
+    let fullCode = $('code_gen').checked;
     let code = $('code_arduino_tempalte').innerText;
-    code = code.replace(/\{columns\}/g, $('columns').value);
-    code = code.replace(/\{rows\}/g, $('rows').value);
-    if ($('lcd_bus').checked)
-        code = code.replace(/{I2C_bus}(.|\n)*?{\/I2C_bus}/g, "").replace(/({parallel_bus}|{\/parallel_bus})/g, "");
-    else
-        code = code.replace(/{parallel_bus}(.|\n)*?{\/parallel_bus}/g, "").replace(/({I2C_bus}|{\/I2C_bus})/g, "");
+    if (fullCode) {
+        code = code.replace(/\{columns\}/g, $('columns').value);
+        code = code.replace(/\{rows\}/g, $('rows').value);
+        if ($('lcd_bus').checked)
+            code = code.replace(/{I2C_bus}(.|\n)*?{\/I2C_bus}/g, "").replace(/({parallel_bus}|{\/parallel_bus})/g, "");
+        else
+            code = code.replace(/{parallel_bus}(.|\n)*?{\/parallel_bus}/g, "").replace(/({I2C_bus}|{\/I2C_bus})/g, "");
+    }
 
     let rowIdx = 0;
     let rowByte = "";
-    let hex = $('lcd_data').checked;
     let charUpload = "[";
     for (let d = 0; d <= 40; d++) {
         if (d > 0 && d % 5 == 0) {
             rowIdx++;
-            charUpload += parseInt(rowByte, 2);
-            if (hex)
-                rowByte = "0x" + binaryToHex(rowByte);
-            else
-                rowByte = "0b" + rowByte;
-
-            code = code.replace("{row" + rowIdx + "}", rowByte);
+            charUpload += bin2dec(rowByte);
             if (d == 40) break;
             else charUpload += ",";
             rowByte = "";
@@ -551,55 +573,69 @@ var updateCustomSymb = () => {
         rowByte += $('dot' + d).checked ? "1" : "0";
     }
     charUpload += "]";
-    CustomSymbolsPanel.font(0, JSON.parse(charUpload));
-    CustomSymbolsPanel.char(0, 0, "\0");
-    code = code.replace(/({customCharArrays}|{\/customCharArrays})/g, "");
+    let customCharIndex = $('currentSymbolIndex').value;
+    CustomSymbolsPanel.font(customCharIndex, JSON.parse(charUpload));
+    CustomSymbolsPanel.char(0, customCharIndex, String.fromCharCode(customCharIndex));
+
+    let charsArray = "";
+    let loadCharArray = "";
+    const charsArrayTmpl = /(?<={customCharArrays})(.|\n)*(?={\/customCharArrays})/g.exec(code)[0];
+    const loadArrayTmpl = /(?<={loadChar})(.|\n)*(?={\/loadChar})/g.exec(code)[0];
+    let i = 0;
+    CustomSymbolsPanel.param.font.forEach(f => {
+        if (i == 0 || (f && JSON.stringify(f) != "[0,0,0,0,0,0,0,0]")) {
+            let dType = $('symbols_data_type').value;
+            var ff = f.slice();//copy array by value
+            if (dType != 'dec')
+                for (let u = 0; u < 8; u++) {
+                    if (dType == "bin") ff[u] = "0b" + dec2bin(f[u]);
+                    else if (dType == "hex") ff[u] = "0x" + dec2hex(f[u]);
+                };
+            let sym = JSON.stringify(ff).replace(/(\[|\]|\")/g, "");
+            if (dType == "bin") sym = sym.replace(/,/g, ",\n\t");
+            charsArray += charsArrayTmpl.replace("{char_index}", i).replace("{symbol_data}", sym);
+            if (fullCode) loadCharArray += loadArrayTmpl.replace(/{char_index}/g, i);
+            i++;
+        }
+    });
+
+    if (fullCode) {
+        code = code.replace("{chars_count}", i);
+        code = code.replace(/({loadChar}(.|\n)*{\/loadChar})/g, loadCharArray);
+        code = code.replace(/({customCharArrays}(.|\n)*{\/customCharArrays})/g, charsArray);
+    } else
+        code = charsArray;
 
     $('custom_sym_code').innerHTML = Prism.highlight(code, Prism.languages.cpp, 'cpp');
+
+    localStorage.setItem('LCDtest_CustomSymbolsFont', JSON.stringify(CustomSymbolsPanel.param.font));
+
     $sd("div_code", 1);
 }
 
-var binaryToHex = (s) => {
-    var i, k, part, accum, ret = '';
-    for (i = s.length - 1; i >= 3; i -= 4) {
-        // extract out in substrings of 4 and convert to hex
-        part = s.substr(i + 1 - 4, 4);
-        accum = 0;
-        for (k = 0; k < 4; k += 1) {
-            if (part[k] !== '0' && part[k] !== '1') return;// invalid character 
-            // compute the length 4 substring
-            accum = accum * 2 + parseInt(part[k], 10);
-        }
-        if (accum >= 10) {
-            // 'A' to 'F'
-            ret = String.fromCharCode(accum - 10 + 'A'.charCodeAt(0)) + ret;
-        } else {
-            // '0' to '9'
-            ret = String(accum) + ret;
-        }
-    }
-    // remaining characters, i = 0, 1, or 2
-    if (i >= 0) {
-        accum = 0;
-        // convert from front
-        for (k = 0; k <= i; k += 1) {
-            if (s[k] !== '0' && s[k] !== '1') return;
-            accum = accum * 2 + parseInt(s[k], 10);
-        }
-        // 3 bits, value cannot exceed 2^3 - 1 = 7, just convert
-        ret = String(accum) + ret;
-    }
-    return ret;
+var bin2hex = (b) => {
+    return b.match(/.{5}/g).reduce((acc, i) => {
+        return acc + parseInt(i, 2).toString(16);
+    }, '')
 }
-var decimalToBin = (number) => {
-    let num = number;
-    let binary = (num % 2).toString();
-    for (; num > 1;) {
-        num = parseInt(num / 2);
-        binary = (num % 2) + (binary);
-    }
-    debug(binary);
-    return binary;
+
+var hex2bin = (h) => {
+    return h.split('').reduce((acc, i) => {
+        return acc + ('0000' + parseInt(i, 16).toString(2));
+    }, '')
+}
+
+var dec2bin = (number) => {
+    let r = '0000' + Number(number).toString(2);
+    return r.substring(r.length - 5, r.length);
+}
+
+var bin2dec = (bin) => {
+    return parseInt(bin, 2);
+}
+
+var dec2hex = (dec) => {
+    return dec.toString(16);
 }
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -608,6 +644,7 @@ window.addEventListener('DOMContentLoaded', () => {
     initPanels();
     initCustomSymbolMatrix();
     initCustomSymbolsPanel();
+    selSymbol('selCustomSymbolIndex');
     // initTableCoord();
 
     setInterval(savePanelsState, 5000);
