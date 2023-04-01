@@ -50,21 +50,22 @@ class CharLCD {
 
     var set = (_, r, c, data) => {
       if (r != parseInt(r) || r < 0 || r >= _.arg.rows || c != parseInt(c) || c < 0 || c >= _.arg.cols) return;
-      if (!data) data = [];
+      if (!data) data = [0];
       var offset = (r * _.arg.cols + c) * CW * CH - 1;
       for (var i = 0; i < CH; i++) {
-        var mask = (data[i] == parseInt(data[i])) ? parseInt(data[i]) : 0;
-        for (var j = 0; j < CW; j++) {
-          _.pix[offset + CW - j].style.backgroundColor = ((1 << j) & mask) ? _.arg.on : "";
-        }
+        var mask = parseInt(data[i]);
         offset += CW;
+        for (var j = 0; j < CW; j++) {
+          _.pix[offset - j].style.backgroundColor = ((1 << j) & mask) ? _.arg.on : "";
+        }
       }
     }
 
     var char = (_, r, c, ch) => {
-      if (!_.font || !ch) return;
-      var x = ch.charCodeAt(0);
-      set(_, r, c, _.font[x] ? _.font[x] : cpList[_.rom].font[x]);
+      if (_.font && ch) {
+        var x = ch.charCodeAt(0);
+        set(_, r, c, _.font[x] ? _.font[x] : cpList[_.rom].font[x]);
+      }
     }
 
     var text = (_, r, c, str) => {
@@ -117,10 +118,7 @@ class CharLCD {
     }
 
     var getSymbolByIndex = (_, x, custom) => {
-      if (!_.font[x] && custom) {
-        debug("getSymbolByIndex error: unset attr");
-        return null;
-      }
+      if (!_.font[x] && custom) return null;
       return _.font[x] ? _.font[x] : cpList[_.rom].font[x];
     }
 
@@ -160,6 +158,7 @@ class CharLCD {
       _.arg.at = document.getElementById(_.arg.at);
 
     createAt(_);
+
     this.set = (r, c, data) => { set(_, r, c, data); };
     this.char = (r, c, ch) => { char(_, r, c, ch); };
     this.text = (r, c, str) => { text(_, r, c, str); };

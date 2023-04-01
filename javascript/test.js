@@ -190,6 +190,7 @@ var addPanel = (config) => {
             content: ""
         }
     }
+    debug(config);
 
     let newPanel = document.createElement('div');
     newPanel.className = "card test_panel";
@@ -202,6 +203,7 @@ var addPanel = (config) => {
 
     if (config.minimized)
         collapsePanel($("min_panel_" + config.id));
+
     setPanelInfoText(config);
     savePanelsState();
 
@@ -401,10 +403,13 @@ var initPanels = () => {
         return;
     }
 
-    for (let i = 0; i < Object.keys(cfg).length; i++) {
-        if (cfg[i].at)
-            addPanel(cfg[i]);
-    }
+    let id = 0;
+    Object.keys(cfg).forEach(p => {
+        cfg[p].id = id;
+        cfg[p].at = "panel_" + id; 
+        addPanel(cfg[p]);
+        id++;
+    });
 }
 
 var initCustomSymbolMatrix = () => {
