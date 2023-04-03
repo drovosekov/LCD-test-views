@@ -50,22 +50,28 @@ class CharLCD {
 
     var set = (_, r, c, data) => {
       if (r != parseInt(r) || r < 0 || r >= _.arg.rows || c != parseInt(c) || c < 0 || c >= _.arg.cols) return;
+      let s = data && data.length > 0;
       if (!data) data = [0];
       var offset = (r * _.arg.cols + c) * CW * CH - 1;
+      let mask = 0;
       for (var i = 0; i < CH; i++) {
-        var mask = parseInt(data[i]);
+        if (s) mask = parseInt(data[i]);
         offset += CW;
         for (var j = 0; j < CW; j++) {
-          _.pix[offset - j].style.backgroundColor = ((1 << j) & mask) ? _.arg.on : "";
+          if (s) {
+            let h = (1 << j);
+            _.pix[offset - j].style.backgroundColor = (h & mask) ? _.arg.on : "";
+          }
+          else
+            _.pix[offset - j].style.backgroundColor = "";
         }
       }
     }
 
     var char = (_, r, c, ch) => {
-      if (_.font && ch) {
-        var x = ch.charCodeAt(0);
-        set(_, r, c, _.font[x] ? _.font[x] : cpList[_.rom].font[x]);
-      }
+      let x = ch.charCodeAt(0);
+      ch = _.font[x] ? _.font[x] : cpList[_.rom].font[x];
+      set(_, r, c, ch);
     }
 
     var text = (_, r, c, str) => {
@@ -111,10 +117,8 @@ class CharLCD {
     }
 
     var font = (_, n, data) => {
-      if (data && n) {
-        if (!_.font) _.font = [];
-        _.font[n] = data;
-      }
+      if (!_.font) _.font = [];
+      _.font[n] = data;
     }
 
     var getSymbolByIndex = (_, x, custom) => {

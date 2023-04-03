@@ -35,6 +35,7 @@ var init_complite = false;
 var copiedPanelConfig = "";
 var panels_config = {};
 var panels_obj = {};
+var selectedMenu;
 var menuItems = ["about", "cps", "custom_symbol", "config", "tests"];
 var elSavedState = [
     { name: 'full_view_cp', defvalue: 'eu' },
@@ -96,6 +97,7 @@ var selMenu = (id) => {
         $sd(element, 0);
         $ch("m_" + element, 0);
     });
+    selectedMenu = id;
     $ch("m_" + id, 1);
     $sd(id, 1);
     saveState(id);
@@ -126,6 +128,10 @@ var selFullViewCP = () => {
         }
     }
     $('custom_symb_matrix').style.backgroundColor = $('lcd_bg_color').value;
+
+    full_view_lcd.param.font = CustomSymbolsPanel.param.font;
+    for (let f = 0; f < 8; f++)
+        full_view_lcd.char(0, f, String.fromCharCode(f));
 }
 
 var initFullViews = () => {
@@ -190,7 +196,6 @@ var addPanel = (config) => {
             content: ""
         }
     }
-    debug(config);
 
     let newPanel = document.createElement('div');
     newPanel.className = "card test_panel";
@@ -214,9 +219,9 @@ var addPanel = (config) => {
 var updatePanel = (p) => {
     let id = getPanelIndex(p);
     let val = p.value;
+
     panels_obj[id].text(0, 0, val);
     panels_config[id].content = val;
-    // savePanelsState();
 }
 
 var copyPanelConfig = (type, el) => {
@@ -406,7 +411,7 @@ var initPanels = () => {
     let id = 0;
     Object.keys(cfg).forEach(p => {
         cfg[p].id = id;
-        cfg[p].at = "panel_" + id; 
+        cfg[p].at = "panel_" + id;
         addPanel(cfg[p]);
         id++;
     });
@@ -419,7 +424,6 @@ var initCustomSymbolMatrix = () => {
     for (let row = 0; row < 8; row++) {
         let mRow = document.createElement('div');
         mRow.className = "row";
-        // mRow.setAttribute("dataX", row);
         for (let col = 0; col < 5; col++) {
             let index = "dot" + (col + row * 5);
             let mLabel = document.createElement('label');
@@ -462,28 +466,28 @@ var initSwipes = () => {//TODO
     var xDown = null;
     var yDown = null;
 
-    function getTouches(evt) {
+    var getTouches = (evt) => {
         return evt.touches ||             // browser API
             evt.originalEvent.touches; // jQuery
     }
 
-    function handleTouchStart(evt) {
+    var handleTouchStart = (evt) => {
         const firstTouch = getTouches(evt)[0];
         xDown = firstTouch.clientX;
         yDown = firstTouch.clientY;
     };
 
-    function handleTouchMove(evt) {
+    var handleTouchMove = (evt) => {
         if (!xDown || !yDown) return;
 
         var xDiff = xDown - evt.touches[0].clientX;
         var yDiff = yDown - evt.touches[0].clientY;
 
         if (Math.abs(xDiff) > Math.abs(yDiff)) {/*most significant*/
-            if (xDiff > 0) {
-                /* right swipe */
-            } else {
-                /* left swipe */
+            if (xDiff > 0) {//right swipe 
+
+            } else { //left swipe 
+
             }
             // } else {
             //     if (yDiff > 0) {
@@ -527,8 +531,11 @@ var selSymbol = (func) => {
 var clearCustomPanel = () => {
     if (!window.confirm("Clear all custom symbols?")) return;
     CustomSymbolsPanel.param.font = [];
-    for (let f = 0; f < 8; f++)
+    full_view_lcd.param.font = [];
+    for (let f = 0; f < 8; f++) {
         CustomSymbolsPanel.set(0, f);
+        full_view_lcd.set(0, f);
+    }
 }
 
 var allOffCustomSymb = () => {
@@ -645,10 +652,10 @@ var dec2hex = (dec) => {
 
 window.addEventListener('DOMContentLoaded', () => {
     loadState();
-    initFullViews();
     initPanels();
     initCustomSymbolMatrix();
     initCustomSymbolsPanel();
+    initFullViews();
     selSymbol('selCustomSymbolIndex');
     // initTableCoord();
 
