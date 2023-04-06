@@ -44,7 +44,7 @@ var elSavedState = [
     { name: 'px_size', defvalue: 3 },
     { name: 'break_size', defvalue: 1 },
     { name: 'lcd_bg_color', defvalue: '#cd2' },
-    { name: 'lcd_text_color', defvalue: '#143' },
+    { name: 'lcd_pixel_color', defvalue: '#143' },
     { name: 'lcd_border' },
     { name: 'lcd_large' },
     { name: 'symbols_data_type' },
@@ -110,6 +110,18 @@ var selStndLCDSize = (val) => {
     $('px_size').value = v[2];
 }
 
+var selLCDColors = () => {
+    full_view_lcd.setBGColor($('lcd_bg_color').value);
+    CustomSymbolsPanel.setBGColor($('lcd_bg_color').value);
+    full_view_lcd.setPixelsColor($('lcd_pixel_color').value);
+    CustomSymbolsPanel.setPixelsColor($('lcd_pixel_color').value);
+    $('custom_symb_matrix').style.backgroundColor = $('lcd_bg_color').value;
+    $qs(".dot-px").forEach(el => {
+        if (el.style.backgroundColor)
+            el.style.backgroundColor = $('lcd_pixel_color').value;
+    });
+}
+
 var selFullViewCP = () => {
     full_view_lcd = new CharLCD({
         at: 'full_view_lcd',
@@ -117,7 +129,7 @@ var selFullViewCP = () => {
         cols: 16,
         rom: $('full_view_cp').value,
         off: $('lcd_bg_color').value,
-        on: $('lcd_text_color').value,
+        on: $('lcd_pixel_color').value,
         pixel_size: full_view_pixel,
         break_size: full_view_brk,
         sym_border: $('show_hover_grid').checked ? 1 : 0
@@ -187,7 +199,7 @@ var addPanel = (config) => {
             cols: $('columns').value,
             rom: $('full_view_cp').value,
             off: $('lcd_bg_color').value,
-            on: $('lcd_text_color').value,
+            on: $('lcd_pixel_color').value,
             pixel_size: $('px_size').value,
             break_size: $('break_size').value,
             sym_border: $('show_hover_grid').checked ? 1 : 0,
@@ -231,7 +243,7 @@ var copyPanelConfig = (type, el) => {
             cols: $('columns').value,
             rom: $('full_view_cp').value,
             off: $('lcd_bg_color').value,
-            on: $('lcd_text_color').value,
+            on: $('lcd_pixel_color').value,
             pixel_size: $('px_size').value,
             break_size: $('break_size').value,
             large: $('lcd_large').checked,
@@ -260,7 +272,7 @@ var pastPanelConfig = (type, el, data) => {
         $v('columns', copiedPanelConfig.cols);
         $v('full_view_cp', copiedPanelConfig.rom);
         $v('lcd_bg_color', copiedPanelConfig.off);
-        $v('lcd_text_color', copiedPanelConfig.on);
+        $v('lcd_pixel_color', copiedPanelConfig.on);
         $v('px_size', copiedPanelConfig.pixel_size);
         $v('break_size', copiedPanelConfig.break_size);
         $ch('lcd_large', copiedPanelConfig.large);
@@ -447,7 +459,7 @@ var initCustomSymbolsPanel = () => {
         cols: 8,
         rom: $('full_view_cp').value,
         off: $('lcd_bg_color').value,
-        on: $('lcd_text_color').value,
+        on: $('lcd_pixel_color').value,
         pixel_size: full_view_pixel,
         break_size: full_view_brk,
         sym_border: $('show_hover_grid').checked ? 1 : 0
