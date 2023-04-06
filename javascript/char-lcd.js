@@ -163,12 +163,16 @@ class CharLCD {
 
     createAt(_);
 
-    var setBG = (color) => { _.arg.at.firstElementChild.style.backgroundColor = color; }
+    var setBG = (color) => {
+      _.arg.at.firstElementChild.style.backgroundColor = color;
+      _.arg.off = color;
+    }
     var setPixel = (color) => {
       _.pix.forEach(el => {
         if (el.style.backgroundColor)
           el.style.backgroundColor = color;
       });
+      _.arg.on = color;
     }
 
     this.setBGColor = (color) => { setBG(color); };

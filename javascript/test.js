@@ -116,7 +116,7 @@ var selLCDColors = () => {
     full_view_lcd.setPixelsColor($('lcd_pixel_color').value);
     CustomSymbolsPanel.setPixelsColor($('lcd_pixel_color').value);
     $('custom_symb_matrix').style.backgroundColor = $('lcd_bg_color').value;
-    $qs(".dot-px").forEach(el => {
+    $qs("label[class='dot-px']").forEach(el => {
         if (el.style.backgroundColor)
             el.style.backgroundColor = $('lcd_pixel_color').value;
     });
@@ -572,6 +572,13 @@ var invertCustomSymb = () => {
 }
 
 var updateCustomSymb = () => {
+    $qs("input+[class='dot-px']").forEach(el => {
+        el.style.backgroundColor = "";
+    });
+    $qs("input:checked+[class='dot-px']").forEach(el => {
+        el.style.backgroundColor = $('lcd_pixel_color').value;
+    });
+
     let fullCode = $('code_gen').checked;
     let code = $('code_arduino_tempalte').innerText;
     if (fullCode) {
