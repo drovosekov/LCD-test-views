@@ -23,7 +23,7 @@ class CharLCD {
           sep.style.left = x + 'px';
           sep.style.width = (cell * CW - 1) + "px";
           sep.style.height = (cell * HH - 1) + "px";
-          if (_.arg.sym_border)
+          if (_.arg.show_hover_grid)
             sep.className = "border";
           else
             sep.className = "only_red_border";

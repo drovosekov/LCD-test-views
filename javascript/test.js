@@ -132,7 +132,7 @@ var selFullViewCP = () => {
         on: $('lcd_pixel_color').value,
         pixel_size: full_view_pixel,
         break_size: full_view_brk,
-        sym_border: $('show_hover_grid').checked ? 1 : 0
+        show_hover_grid: $('show_hover_grid').checked ? 1 : 0
     });
     for (let i = 0; i < 16; i++) {
         for (let j = 0; j < 16; j++) {
@@ -202,7 +202,7 @@ var addPanel = (config) => {
             on: $('lcd_pixel_color').value,
             pixel_size: $('px_size').value,
             break_size: $('break_size').value,
-            sym_border: $('show_hover_grid').checked ? 1 : 0,
+            show_hover_grid: $('show_hover_grid').checked ? 1 : 0,
             large: $('lcd_large').checked,
             border: $('lcd_border').checked,
             content: ""
@@ -248,16 +248,14 @@ var copyPanelConfig = (type, el) => {
             break_size: $('break_size').value,
             large: $('lcd_large').checked,
             border: $('lcd_border').checked,
-            sym_border: $('show_hover_grid').checked ? 1 : 0
+            show_hover_grid: $('show_hover_grid').checked ? 1 : 0,
         }
         ToolTip("Global settings saved at inner variable.<br />You can past it to test panels config", "green");
     } else if (type == "CustomSymbol") {
         symbol_code = CustomSymbolsPanel.getSymbolByIndex($('currentSymbolIndex').value);
         ToolTip("Custom symbol saved at innet variable", "green");
     } else if (type == "config") {
-        let id = getPanelIndex(el);
-        if (!id) return;
-        copiedPanelConfig = panels_config[id];
+        copiedPanelConfig = panels_config[getPanelIndex(el)];
         ToolTip("Panel config saved at inner variable.<br />Past it to other panel config or gloabal settings", "green");
     }
 }
@@ -282,24 +280,18 @@ var pastPanelConfig = (type, el, data) => {
 
         ToolTip("Global settings replaced with saved", "yellow");
     } else if (type == "CustomSymbol") {
-        if (!data && !symbol_code && init_complite) {
-            ToolTip("Error: empty symbol code", "red");
-            return;
-        }
-        if (!data) data = symbol_code;
-        if (!data) return;
-        let rowIdx = 0;
-        let code;
-        let b = 0;
-        for (let d = 0; d < 40; d++) {
-            if (d % 5 == 0) {
-                code = "00000" + dec2bin(data[rowIdx]);
-                code = code.substring(code.length - 5, code.length);
-                rowIdx++;
-                b = 0;
+        if (!data) {
+            if (!symbol_code && init_complite) {
+                ToolTip("Error: empty symbol code", "red");
+                return;
             }
-            $('dot' + d).checked = code.substring(b, b + 1) == "1";
-            b++;
+            data = symbol_code;
+        }
+
+        for (let d = 0; d < 8; d++) {
+            dec2bin(data[d]).split('').reduce((acc, n, i) => {
+                $('dot' + (d * 5 + i - 1)).checked = n == "1";
+            });
         }
         updateCustomSymb();
     } else if (type == "panel") {
@@ -412,7 +404,7 @@ var initPanels = () => {
             on: "#143",
             pixel_size: 3,
             break_size: 1,
-            sym_border: $('show_hover_grid').checked ? 1 : 0,
+            show_hover_grid: $('show_hover_grid').checked ? 1 : 0,
             large: 0,
             border: 1,
             content: "Test LCD Display\nEmulator HD44780"
@@ -462,7 +454,7 @@ var initCustomSymbolsPanel = () => {
         on: $('lcd_pixel_color').value,
         pixel_size: full_view_pixel,
         break_size: full_view_brk,
-        sym_border: $('show_hover_grid').checked ? 1 : 0
+        show_hover_grid: $('show_hover_grid').checked ? 1 : 0
     });
     let font = JSON.parse(localStorage.getItem('LCDtest_CustomSymbolsFont') || "[]");
     CustomSymbolsPanel.param.font = font;
@@ -645,20 +637,20 @@ var updateCustomSymb = () => {
 }
 
 var bin2hex = (b) => {
-    return b.match(/.{5}/g).reduce((acc, i) => {
+    return b.match(/.{4}/g).reduce((acc, i) => {
         return acc + parseInt(i, 2).toString(16);
     }, '')
 }
 
 var hex2bin = (h) => {
     return h.split('').reduce((acc, i) => {
-        return acc + ('0000' + parseInt(i, 16).toString(2));
+        return acc + (parseInt(i, 16).toString(2));
     }, '')
 }
 
 var dec2bin = (number) => {
-    let r = '0000' + Number(number).toString(2);
-    return r.substring(r.length - 5, r.length);
+    let r = '00000' + Number(number).toString(2);
+    return r.substring(r.length - 6);
 }
 
 var bin2dec = (bin) => {
@@ -676,7 +668,6 @@ window.addEventListener('DOMContentLoaded', () => {
     initCustomSymbolsPanel();
     initFullViews();
     selSymbol('selCustomSymbolIndex');
-    // initTableCoord();
 
     setInterval(savePanelsState, 5000);
     init_complite = true;
