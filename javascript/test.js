@@ -253,10 +253,10 @@ var copyPanelConfig = (type, el) => {
         ToolTip("Global settings saved at inner variable.<br />You can past it to test panels config", "green");
     } else if (type == "CustomSymbol") {
         symbol_code = CustomSymbolsPanel.getSymbolByIndex($('currentSymbolIndex').value);
-        ToolTip("Custom symbol saved at innet variable", "green");
+        ToolTip("Custom symbol saved at inner variable", "green");
     } else if (type == "config") {
         copiedPanelConfig = panels_config[getPanelIndex(el)];
-        ToolTip("Panel config saved at inner variable.<br />Past it to other panel config or gloabal settings", "green");
+        ToolTip("Panel config saved at inner variable.<br />Past it to other panel config or gloabal settings page", "green");
     }
 }
 
