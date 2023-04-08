@@ -582,20 +582,18 @@ var updateCustomSymb = () => {
             code = code.replace(/{parallel_bus}(.|\n)*?{\/parallel_bus}/g, "").replace(/({I2C_bus}|{\/I2C_bus})/g, "");
     }
 
-    let rowIdx = 0;
     let rowByte = "";
     let charUpload = "[";
-    for (let d = 0; d <= 40; d++) {
-        if (d > 0 && d % 5 == 0) {
-            rowIdx++;
+    for (let d = 0; d < 40; d++) {
+        rowByte += $('dot' + d).checked ? "1" : "0";
+        if (rowByte.length == 5) {
             charUpload += bin2dec(rowByte);
-            if (d == 40) break;
-            else charUpload += ",";
+            if (d < 35) charUpload += ",";
             rowByte = "";
         }
-        rowByte += $('dot' + d).checked ? "1" : "0";
     }
     charUpload += "]";
+
     let customCharIndex = $('currentSymbolIndex').value;
     CustomSymbolsPanel.font(customCharIndex, JSON.parse(charUpload));
     CustomSymbolsPanel.char(0, customCharIndex, String.fromCharCode(customCharIndex));
@@ -605,18 +603,22 @@ var updateCustomSymb = () => {
     const charsArrayTmpl = /(?<={customCharArrays})(.|\n)*(?={\/customCharArrays})/g.exec(code)[0];
     const loadArrayTmpl = /(?<={loadChar})(.|\n)*(?={\/loadChar})/g.exec(code)[0];
     let i = 0;
+    let dType = $('symbols_data_type').value;
     CustomSymbolsPanel.param.font.forEach(f => {
         if (i == 0 || (f && JSON.stringify(f) != "[0,0,0,0,0,0,0,0]")) {
-            let dType = $('symbols_data_type').value;
-            var ff = f.slice();//copy array by value
-            if (dType != 'dec')
-                for (let u = 0; u < 8; u++) {
-                    if (dType == "bin") ff[u] = "0b" + dec2bin(f[u]);
-                    else if (dType == "hex") ff[u] = "0x" + dec2hex(f[u]);
-                };
+            var ff = Array(8);
+            for (let u = 0; u < 8; u++) {
+                if (dType == "bin") ff[u] = "0b" + dec2bin(f[u]);
+                else if (dType == "hex") ff[u] = "0x" + dec2hex(f[u]);
+                else ff[u] = f[u];//decimal by default format
+            };
             let sym = JSON.stringify(ff).replace(/(\[|\]|\")/g, "");
-            if (dType == "bin") sym = sym.replace(/,/g, ",\n\t");
-            charsArray += charsArrayTmpl.replace("{char_index}", i).replace("{symbol_data}", sym);
+            let chrD = charsArrayTmpl.replace("{char_index}", i);
+            if (dType == "bin") {
+                charsArray += chrD.replace("{symbol_data}", "\n\t\t\t" + sym.replace(/,/g, ",\n\t\t\t") + "\n");
+            } else {
+                charsArray += chrD.replace("{symbol_data}", sym + " ");
+            }
             if (fullCode) loadCharArray += loadArrayTmpl.replace(/{char_index}/g, i);
             i++;
         }
