@@ -122,6 +122,12 @@ var selLCDColors = () => {
     });
 }
 
+var updateFullViewCustomSymbols = () => {
+    full_view_lcd.param.font = CustomSymbolsPanel.param.font;
+    for (let f = 0; f < 8; f++)
+        full_view_lcd.char(0, f, String.fromCharCode(f));
+}
+
 var selFullViewCP = () => {
     full_view_lcd = new CharLCD({
         at: 'full_view_lcd',
@@ -141,9 +147,7 @@ var selFullViewCP = () => {
     }
     $('custom_symb_matrix').style.backgroundColor = $('lcd_bg_color').value;
 
-    full_view_lcd.param.font = CustomSymbolsPanel.param.font;
-    for (let f = 0; f < 8; f++)
-        full_view_lcd.char(0, f, String.fromCharCode(f));
+    updateFullViewCustomSymbols();
 }
 
 var initFullViews = () => {
@@ -151,27 +155,26 @@ var initFullViews = () => {
         at: 'lcd0', rows: 1, cols: 1, off: '#fff', on: '#f00',
         pixel_size: full_view_pixel, break_size: full_view_brk
     });//1 custom symbol panel
-    lcd0.font(0, [0, 10, 21, 17, 10, 4]);   //save heart symbol at 0 index
+    lcd0.font(0, [0, 0, 10, 21, 17, 10, 4]);   //save heart symbol at 0 index
     lcd0.char(0, 0, String.fromCharCode(0));//draw custom symbol saved at 0 index
 
-    var lcd1 = new CharLCD({
+    new CharLCD({
         at: 'lcd1', rows: 1, cols: 16, off: '#fff', on: '#000',
-        pixel_size: full_view_pixel, break_size: full_view_brk
-    });//left horizontal index 
-    lcd1.text(0, 0, "0123456789ABCDEF");
+        pixel_size: full_view_pixel, break_size: full_view_brk,
+        content: "0123456789ABCDEF"
+    });//left horizontal index  
 
-    var lcdv = new CharLCD({
+    new CharLCD({
         at: 'lcdv', rows: 16, cols: 1, off: '#fff', on: '#000',
-        pixel_size: full_view_pixel, break_size: full_view_brk
-    });//vertical index 
-    lcdv.text(0, 0, "0\n1\n2\n3\n4\n5\n6\n7\n8\n9\nA\nB\nC\nD\nE\nF");
+        pixel_size: full_view_pixel, break_size: full_view_brk,
+        content: "0\n1\n2\n3\n4\n5\n6\n7\n8\n9\nA\nB\nC\nD\nE\nF"
+    });//vertical index  
 
     selFullViewCP();
 }
 
 var createNewPanel = (config) => {
     let newLCD = new CharLCD(config);
-    if (config.content) newLCD.text(0, 0, config.content);
     panels_obj[config.id] = newLCD
 
     $sbg($('panel_' + config.id).parentNode, config.border ? "#000" : "#fff");
@@ -215,6 +218,8 @@ var addPanel = (config) => {
     newPanel.innerHTML = $("panel_template").innerHTML.replace("{text}", config.content).replace("{PanelName}", config.name).replace(/{id}/g, config.id);
     $("panels").appendChild(newPanel);
 
+    config.custom_font = CustomSymbolsPanel.param.font;
+
     panels_config[config.id] = config;
     createNewPanel(config);
 
@@ -253,6 +258,9 @@ var copyPanelConfig = (type, el) => {
         ToolTip("Global settings saved at inner variable.<br />You can past it to test panels config", "green");
     } else if (type == "CustomSymbol") {
         symbol_code = CustomSymbolsPanel.getSymbolByIndex($('currentSymbolIndex').value);
+        copiedPanelConfig = {
+            custom_font: CustomSymbolsPanel.param.font
+        };
         ToolTip("Custom symbol saved at inner variable", "green");
     } else if (type == "config") {
         copiedPanelConfig = panels_config[getPanelIndex(el)];
@@ -280,19 +288,26 @@ var pastPanelConfig = (type, el, data) => {
 
         ToolTip("Global settings replaced with saved", "yellow");
     } else if (type == "CustomSymbol") {
-        if (!data) {
+        let updateCustomMatrix = (data) => {
+            for (let d = 0; d < 8; d++) {
+                dec2bin(data[d]).split('').reduce((prev, curr, index) => {
+                    $('dot' + (d * 5 + index - 1)).checked = curr == "1";
+                });
+            }
+        }
+        if (copiedPanelConfig.custom_font) {
+            CustomSymbolsPanel.param.font = copiedPanelConfig.custom_font;
+        }
+        else if (data) {
+            updateCustomMatrix(data);
+        } else {
             if (!symbol_code && init_complite) {
                 ToolTip("Error: empty symbol code", "red");
                 return;
             }
-            data = symbol_code;
+            updateCustomMatrix(symbol_code);
         }
 
-        for (let d = 0; d < 8; d++) {
-            dec2bin(data[d]).split('').reduce((acc, n, i) => {
-                $('dot' + (d * 5 + i - 1)).checked = n == "1";
-            });
-        }
         updateCustomSymb();
     } else if (type == "panel") {
         if (typeof copiedPanelConfig.rom != 'string') {
@@ -303,6 +318,7 @@ var pastPanelConfig = (type, el, data) => {
         copiedPanelConfig.id = id;
         copiedPanelConfig.at = "panel_" + id;
         copiedPanelConfig.content = panels_config[id].content;
+        copiedPanelConfig.custom_font = CustomSymbolsPanel.param.font;
         if (!copiedPanelConfig.name) copiedPanelConfig.name = panels_config[id].name;
         panels_config[id] = copiedPanelConfig;
         createNewPanel(copiedPanelConfig);
@@ -510,7 +526,7 @@ var selSymbol = (func) => {
     let setCustomSymbolMatrix = (index) => {
         $('currentSymbolIndex').value = index;
         let customSymb = CustomSymbolsPanel.getSymbolByIndex(index, true);
-        if (!customSymb && customSymb == null) customSymb = [];
+        if (!customSymb || customSymb == null) customSymb = [];
         pastPanelConfig('CustomSymbol', null, customSymb);
     }
     if (func == "selCustomSymbolIndex") {
@@ -567,20 +583,10 @@ var updateCustomSymb = () => {
     $qs("input+[class='dot-px']").forEach(el => {
         el.style.backgroundColor = "";
     });
+    let px_color = $('lcd_pixel_color').value;
     $qs("input:checked+[class='dot-px']").forEach(el => {
-        el.style.backgroundColor = $('lcd_pixel_color').value;
+        el.style.backgroundColor = px_color;
     });
-
-    let fullCode = $('code_gen').checked;
-    let code = $('code_arduino_tempalte').innerText;
-    if (fullCode) {
-        code = code.replace(/\{columns\}/g, $('columns').value);
-        code = code.replace(/\{rows\}/g, $('rows').value);
-        if ($('lcd_bus').checked)
-            code = code.replace(/{I2C_bus}(.|\n)*?{\/I2C_bus}/g, "").replace(/({parallel_bus}|{\/parallel_bus})/g, "");
-        else
-            code = code.replace(/{parallel_bus}(.|\n)*?{\/parallel_bus}/g, "").replace(/({I2C_bus}|{\/I2C_bus})/g, "");
-    }
 
     let rowByte = "";
     let charUpload = "[";
@@ -598,6 +604,8 @@ var updateCustomSymb = () => {
     CustomSymbolsPanel.font(customCharIndex, JSON.parse(charUpload));
     CustomSymbolsPanel.char(0, customCharIndex, String.fromCharCode(customCharIndex));
 
+    let code = $('code_arduino_tempalte').innerText;
+    let fullCode = $('code_gen').checked;
     let charsArray = "";
     let loadCharArray = "";
     const charsArrayTmpl = /(?<={customCharArrays})(.|\n)*(?={\/customCharArrays})/g.exec(code)[0];
@@ -625,6 +633,13 @@ var updateCustomSymb = () => {
     });
 
     if (fullCode) {
+        code = code.replace(/\{columns\}/g, $('columns').value);
+        code = code.replace(/\{rows\}/g, $('rows').value);
+        if ($('lcd_bus').checked)
+            code = code.replace(/{I2C_bus}(.|\n)*?{\/I2C_bus}/g, "").replace(/({parallel_bus}|{\/parallel_bus})/g, "");
+        else
+            code = code.replace(/{parallel_bus}(.|\n)*?{\/parallel_bus}/g, "").replace(/({I2C_bus}|{\/I2C_bus})/g, "");
+
         code = code.replace("{chars_count}", i);
         code = code.replace(/({loadChar}(.|\n)*{\/loadChar})/g, loadCharArray);
         code = code.replace(/({customCharArrays}(.|\n)*{\/customCharArrays})/g, charsArray);
@@ -636,6 +651,8 @@ var updateCustomSymb = () => {
     localStorage.setItem('LCDtest_CustomSymbolsFont', JSON.stringify(CustomSymbolsPanel.param.font));
 
     $sd("div_code", 1);
+
+    updateFullViewCustomSymbols();
 }
 
 var bin2hex = (b) => {
@@ -665,9 +682,9 @@ var dec2hex = (dec) => {
 
 window.addEventListener('DOMContentLoaded', () => {
     loadState();
-    initPanels();
-    initCustomSymbolMatrix();
     initCustomSymbolsPanel();
+    initCustomSymbolMatrix();
+    initPanels();
     initFullViews();
     selSymbol('selCustomSymbolIndex');
 
