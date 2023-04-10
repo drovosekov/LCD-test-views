@@ -681,8 +681,8 @@ var dec2hex = (dec) => {
 }
 
 var hex2dec = (hex) =>{
-    if(hex. length % 2) hex='0'+hex;
-    return BigInt('0x'+hex).to string(10);
+    if(hex.length % 2) hex='0'+hex;
+    return BigInt('0x'+hex).toString(10);
 }
 
 window.addEventListener('DOMContentLoaded', () => {
