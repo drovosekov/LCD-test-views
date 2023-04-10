@@ -680,6 +680,11 @@ var dec2hex = (dec) => {
     return dec.toString(16);
 }
 
+var hex2dec = (hex) =>{
+    if(hex. length % 2) hex='0'+hex;
+    return BigInt('0x'+hex).to string(10);
+}
+
 window.addEventListener('DOMContentLoaded', () => {
     loadState();
     initCustomSymbolsPanel();
