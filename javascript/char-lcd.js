@@ -76,6 +76,10 @@ class CharLCD {
 
         var text = (_, r, c, str) => { 
             if (r != parseInt(r) || r < 0 || r >= _.arg.rows || c != parseInt(c) || c < 0 || c >= _.arg.cols) return;
+
+str=str.repplace(/\\([0-9A-F]{1,2})/g, (_, m)=>{
+    return String.fromCharCode(hex2dec(m))
+});
             var i, k, x;
             for (i = 0; i < str.length + 1; i++) {
                 if (str[i] == '\n') {
