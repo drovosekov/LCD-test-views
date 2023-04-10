@@ -81,7 +81,7 @@ str=str.repplace(/\\([0-9A-F]{1,2})/g, (_, m)=>{
     return String.fromCharCode(hex2dec(m))
 });
             var i, k, x;
-            for (i = 0; i < str.length + 1; i++) {
+            for (i = 0; i < str.length; i++) {
                 if (str[i] == '\n') {
                     while (c < _.arg.cols)
                         char(_, r, c++, " ");
