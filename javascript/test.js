@@ -237,8 +237,9 @@ var updatePanel = (p) => {
     let id = getPanelIndex(p);
     let val = p.value;
 
-    panels_obj[id].text(0, 0, val);
     panels_config[id].content = val;
+
+    panels_obj[id].text(0, 0, val);
 }
 
 var copyPanelConfig = (type, el) => {
@@ -627,7 +628,8 @@ var updateCustomSymb = () => {
             } else {
                 charsArray += chrD.replace("{symbol_data}", sym + " ");
             }
-            if (fullCode) loadCharArray += loadArrayTmpl.replace(/{char_index}/g, i);
+            if (fullCode)
+                loadCharArray += loadArrayTmpl.replace(/{char_index}/g, i);
             i++;
         }
     });

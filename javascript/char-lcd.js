@@ -74,10 +74,18 @@ class CharLCD {
             set(_, r, c, ch);
         }
 
-        var text = (_, r, c, str) => { 
+        var text = (_, r, c, str) => {
             if (r != parseInt(r) || r < 0 || r >= _.arg.rows || c != parseInt(c) || c < 0 || c >= _.arg.cols) return;
             var i, k, x;
-            for (i = 0; i < str.length + 1; i++) {
+
+            let customs = str.match(/(\\([0-9A-F]){2})|(\\[0-7])/g);
+            if (customs)
+                str = customs.reduce((prev, curr) => {
+                    let v = prev ? prev : curr;
+                    return String.fromCharCode(v.replace("\\", ""));
+                })
+
+            for (i = 0; i < str.length; i++) {
                 if (str[i] == '\n') {
                     while (c < _.arg.cols)
                         char(_, r, c++, " ");
@@ -165,11 +173,11 @@ class CharLCD {
 
         if (typeof _.arg.at == 'string')
             _.arg.at = document.getElementById(_.arg.at);
- 
+
         createAt(_);
- 
+
         if (obj && obj.content)
-            text(_, 0, 0, obj.content);  
+            text(_, 0, 0, obj.content);
 
         var setBG = (color) => {
             _.arg.at.firstElementChild.style.backgroundColor = color;
