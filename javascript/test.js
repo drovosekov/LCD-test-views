@@ -523,9 +523,9 @@ var initSwipes = () => {//TODO
 
         if (Math.abs(xDiff) > Math.abs(yDiff)) {/*most significant*/
             if (xDiff > 0) {//right swipe 
-
+                ToolTip("Swipe right","blue");
             } else { //left swipe 
-
+                ToolTip("Swipe left","blue");
             }
             // } else {
             //     if (yDiff > 0) {
@@ -560,7 +560,7 @@ var selSymbol = (func) => {
     let index = row * 16 + col;
     if (func == "cps") {
         symbol_code = full_view_lcd.getSymbolByIndex(index);
-        ToolTip('Symbol config copyed. You can past it in custom symbol generator page', 'green');
+        ToolTip('Symbol config view saved at inner variable. You can past it in custom symbol generator page', 'green');
     } else if (func = "custom_sym") {
         setCustomSymbolMatrix(index);
     }
@@ -712,6 +712,7 @@ window.addEventListener('DOMContentLoaded', () => {
     initFullViews();
     selSymbol('selCustomSymbolIndex');
     selLCDColors();
+    initSwipes();
 
     setInterval(savePanelsState, 5000);
     init_complite = true;
