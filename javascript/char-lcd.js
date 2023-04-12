@@ -8,11 +8,13 @@ class CharLCD {
             var r, c, rr, cc, x, y, pix;
             var cell = _.arg.pixel_size + _.arg.break_size;
             var HH = _.arg.large ? CL : CH;
+            var lcd_div = document.createElement('div');
+            lcd_div.className = "lcd_div";
+            lcd_div.style.backgroundColor = _.arg.off;
             var lcd = document.createElement('div');
             lcd.className = "lcd_panel";
             lcd.style.width = (cell * (1 + CW) * _.arg.cols) + 'px';
             lcd.style.height = (cell * (1 + HH) * _.arg.rows) + 'px';
-            lcd.style.backgroundColor = _.arg.off;
 
             for (r = 0; r < _.arg.rows; r++) {
                 for (c = 0; c < _.arg.cols; c++) {
@@ -45,7 +47,8 @@ class CharLCD {
                 }
             }
             _.arg.at.innerHTML = '';
-            _.arg.at.appendChild(lcd);
+            lcd_div.appendChild(lcd);
+            _.arg.at.appendChild(lcd_div);
         }
 
         var set = (_, r, c, data) => {
