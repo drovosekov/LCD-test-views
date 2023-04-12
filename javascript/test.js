@@ -103,6 +103,35 @@ var selMenu = (id) => {
     saveState(id);
 }
 
+var initSwipes = () => {
+    let touchstartX = 0
+    let touchendX = 0
+
+    var swipeMenu = (dir) => {
+        let curIndex = menuItems.indexOf(selectedMenu);
+        curIndex += dir;
+        if (curIndex < 0) curIndex = menuItems.length;
+        else if (curIndex > menuItems.length) curIndex = 0;
+        selMenu(menuItems[curIndex]);
+    }
+
+    var checkDirection = () => {
+        if (touchendX < touchstartX)
+            swipeMenu(+1);
+        else if (touchendX > touchstartX)
+            swipeMenu(-1);
+    }
+
+    document.addEventListener('touchstart', e => {
+        touchstartX = e.changedTouches[0].screenX
+    })
+
+    document.addEventListener('touchend', e => {
+        touchendX = e.changedTouches[0].screenX
+        checkDirection()
+    })
+}
+
 var selStndLCDSize = (val) => {
     var v = val.split('x');
     $('rows').value = v[0];
@@ -495,49 +524,6 @@ var initCustomSymbolsPanel = () => {
     for (let f = 0; f < font.length; f++)
         if (font[f] && font[f] != null)
             CustomSymbolsPanel.char(0, f, String.fromCharCode(f));
-}
-
-var initSwipes = () => {//TODO
-    document.addEventListener('touchstart', handleTouchStart, false);
-    document.addEventListener('touchmove', handleTouchMove, false);
-
-    var xDown = null;
-    var yDown = null;
-
-    var getTouches = (evt) => {
-        return evt.touches ||             // browser API
-            evt.originalEvent.touches; // jQuery
-    }
-
-    var handleTouchStart = (evt) => {
-        const firstTouch = getTouches(evt)[0];
-        xDown = firstTouch.clientX;
-        yDown = firstTouch.clientY;
-    };
-
-    var handleTouchMove = (evt) => {
-        if (!xDown || !yDown) return;
-
-        var xDiff = xDown - evt.touches[0].clientX;
-        var yDiff = yDown - evt.touches[0].clientY;
-
-        if (Math.abs(xDiff) > Math.abs(yDiff)) {/*most significant*/
-            if (xDiff > 0) {//right swipe 
-                ToolTip("Swipe right","blue");
-            } else { //left swipe 
-                ToolTip("Swipe left","blue");
-            }
-            // } else {
-            //     if (yDiff > 0) {
-            //         /* down swipe */
-            //     } else {
-            //         /* up swipe */
-            //     }
-        }
-        /* reset values */
-        xDown = null;
-        yDown = null;
-    };
 }
 
 var selSymbol = (func) => {
