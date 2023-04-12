@@ -456,36 +456,43 @@ input {
     }
 }
 
-    //panel colors
+//panel colors
 div.colors_box {
-    div.lcd_green {
-        div {
-            background-color: #143;
-        }
-        background-color: #a5dd22;
-    }
+    // div.lcd_green {
+    //     i {
+    //         background-color: #143;
+    //     }
+    //     background-color: #a5dd22;
+    // }
 
-    div.lcd_blue {
-        div {
-            background-color: #fe8;
-        } 
-        background-color: #00009d;
-    }
+    // div.lcd_blue {
+    //     i {
+    //         background-color: #fe8;
+    //     }
+    //     background-color: #00009d;
+    // }
 
-    div.lcd_white {
-        div {
-            background-color: #143;
-        }
-        background-color: #d5d9e0;
+    // div.lcd_white {
+    //     i {
+    //         background-color: #143;
+    //     }
+    //     background-color: #d5d9e0;
+    // }
+
+    // div.lcd_black {
+    //     i {
+    //         background-color: #fe8;
+    //     }
+    //     background-color: #252525;
+    // }
+
+    div { 
+        padding: 10px; 
     }
-    
-    div{
-        display: block;
-        align-items: center;
-    } 
-    vertical-align: center;
-    align-items: center;
-    padding: 15px;
+    i {
+        padding: 5px;
+        margin: 2px;
+    }
 }
 
 //текстовое поле с выпадающим списоком с подсказками

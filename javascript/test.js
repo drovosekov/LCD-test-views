@@ -4,7 +4,7 @@ var debug = (v) => { if (typeof (v) == "object") v = JSON.stringify(v); window.c
 var $$ = (id) => { return document.getElementById(id) }
 var $n = (id) => { return document.getElementsByName(id)[0] }
 var $ = (id) => { if ($$(id)) return $$(id); else return $n(id) }
-var $sbg = (id, color) => { if (id) id.style.backgroundColor = color; else debug(mis + id) }
+var $sbg = (id, color) => { if (id && id.style) id.style.backgroundColor = color; /*else debug(mis + id) */ }
 var $sc = (id, color) => { if ($(id)) $(id).style.color = color; else debug(mis + id) }
 var $sd = (id, v, st = 'block') => { if ($(id)) { $(id).classList.remove("hidden"); $(id).style.display = v ? st : 'none' } else debug(mis + id) }
 var $tt = (id) => { if ($(id)) return $(id).innerText; else debug(mis + id) }
@@ -111,14 +111,21 @@ var selStndLCDSize = (val) => {
 }
 
 var selLCDColors = () => {
-    full_view_lcd.setBGColor($('lcd_bg_color').value);
-    CustomSymbolsPanel.setBGColor($('lcd_bg_color').value);
-    full_view_lcd.setPixelsColor($('lcd_pixel_color').value);
-    CustomSymbolsPanel.setPixelsColor($('lcd_pixel_color').value);
-    $('custom_symb_matrix').style.backgroundColor = $('lcd_bg_color').value;
+    let bg = $('lcd_bg_color').value;
+    let px = $('lcd_pixel_color').value;
+    full_view_lcd.setBGColor(bg);
+    full_view_lcd.setPixelsColor(px);
+    CustomSymbolsPanel.setPixelsColor(px);
+    CustomSymbolsPanel.setBGColor(bg);
+    $sbg($('custom_symb_matrix'), bg);
     $qs("label[class='dot-px']").forEach(el => {
         if (el.style.backgroundColor)
-            el.style.backgroundColor = $('lcd_pixel_color').value;
+            $sbg(el, px);
+    });
+    let tmpl = $('colors_tmpl');
+    $sbg(tmpl, bg);
+    tmpl.childNodes.forEach(i => {
+        $sbg(i, px);
     });
 }
 
@@ -704,6 +711,7 @@ window.addEventListener('DOMContentLoaded', () => {
     initPanels();
     initFullViews();
     selSymbol('selCustomSymbolIndex');
+    selLCDColors();
 
     setInterval(savePanelsState, 5000);
     init_complite = true;

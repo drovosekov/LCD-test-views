@@ -244,7 +244,7 @@ void loop() { }
             <div id="color" class="card">
                 <h3>Colors</h3>
                 <div>
-                    <span class="l">Background:</span>
+                    <span class="l">Back light:</span>
                     <span class="r">
                         <select id="lcd_bg_color" onchange="selLCDColors()">
                             <option value="#008">blue</option>
@@ -255,7 +255,7 @@ void loop() { }
                     </span>
                 </div>
                 <div>
-                    <span class="l">Text:</span>
+                    <span class="l">Pixels:</span>
                     <span class="r">
                         <select id="lcd_pixel_color" onchange="selLCDColors()">
                             <option value="#fe8">light</option>
@@ -263,25 +263,20 @@ void loop() { }
                         </select>
                     </span>
                 </div>
-            </div>
-            <div id="color_box" class="card hidden">
-                <h3>Colors</h3>
 
                 <div class="colors_box">
                     <div class="lcd_border">
-                        <div class="lcd_green">
-                            <div></div>
-                        </div>
-                    </div>
-
-                    <div class="lcd_border">
-                        <div class="lcd_green">
-                            <div></div>
+                        <div class="lcd_green" id="colors_tmpl">
+                            <i></i>
+                            <i></i>
+                            <i></i>
+                            <i></i>
+                            <i></i>
                         </div>
                     </div>
                 </div>
-
             </div>
+
             <div id="pixel_size" class="card">
                 <h3>Pixels and breaks size</h3>
                 <div>
