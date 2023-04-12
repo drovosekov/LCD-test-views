@@ -110,8 +110,10 @@ var initSwipes = () => {
     var swipeMenu = (dir) => {
         let curIndex = menuItems.indexOf(selectedMenu);
         curIndex += dir;
-        if (curIndex < 0) curIndex = menuItems.length;
-        else if (curIndex > menuItems.length) curIndex = 0;
+        debug(curIndex);
+        debug(menuItems.length);
+        if (curIndex < 0) curIndex = menuItems.length - 1;
+        else if (curIndex > menuItems.length - 1) curIndex = 0;
         selMenu(menuItems[curIndex]);
     }
 
