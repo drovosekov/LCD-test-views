@@ -134,7 +134,6 @@ span.l {
 
 .lcd_div {
     padding: 3px;
-    // margin: 5px;
     align-items: center; 
 }
 .lcd_panel {
@@ -463,12 +462,12 @@ input {
 
 //panel colors
 div.colors_box {
-    // div.lcd_green {
-    //     i {
-    //         background-color: #143;
-    //     }
-    //     background-color: #a5dd22;
-    // }
+    div.lcd_green {
+        i {
+            background-color: #143;
+        }
+        background-color: #2f17a7;
+    }
 
     // div.lcd_blue {
     //     i {
