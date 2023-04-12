@@ -264,28 +264,23 @@ void loop() { }
                     </span>
                 </div>
             </div>
-            <div id="color" class="card">
+            <div id="color_box" class="card hidden">
                 <h3>Colors</h3>
-                <div>
-                    <span class="l">Background:</span>
-                    <span class="r">
-                        <select id="lcd_bg_color" onchange="selLCDColors()">
-                            <option value="#008">blue</option>
-                            <option value="#cd2">green-yellow</option>
-                            <option value="#D5D9E0">while</option>
-                            <option value="#121212">black</option>
-                        </select>
-                    </span>
+
+                <div class="colors_box">
+                    <div class="lcd_border">
+                        <div class="lcd_green">
+                            <div></div>
+                        </div>
+                    </div>
+
+                    <div class="lcd_border">
+                        <div class="lcd_green">
+                            <div></div>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <span class="l">Text:</span>
-                    <span class="r">
-                        <select id="lcd_pixel_color" onchange="selLCDColors()">
-                            <option value="#fe8">light</option>
-                            <option value="#143">dark</option>
-                        </select>
-                    </span>
-                </div>
+
             </div>
             <div id="pixel_size" class="card">
                 <h3>Pixels and breaks size</h3>
@@ -331,7 +326,7 @@ void loop() { }
         </span>
         <span class="l">
             <button onclick='pastPanelConfig("panel", this)' title="Past panel config">▼</button>
-            <button onclick='copyPanelConfig("config", this)' title="Copy panel config">▲</button>
+            <button onclick='copyPanelConfig("panel", this)' title="Copy panel config">▲</button>
             <button onclick='collapsePanel(this)' title="Collapse panel" id="min_panel_{id}">_</button>
             <button onclick='delPanel(this)' title="Delete panel">X</button>
         </span>

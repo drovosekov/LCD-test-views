@@ -17,7 +17,7 @@ class CharLCD {
             for (r = 0; r < _.arg.rows; r++) {
                 for (c = 0; c < _.arg.cols; c++) {
                     let sep = document.createElement('ul');
-                    x = cell * c * (CW + 1) + 2;
+                    x = cell * c * (CW + 1) + 1;
                     y = cell * r * (HH + 1) + 1;
                     sep.style.top = y + 'px';
                     sep.style.left = x + 'px';
@@ -77,14 +77,15 @@ class CharLCD {
         var text = (_, r, c, str) => {
             if (r != parseInt(r) || r < 0 || r >= _.arg.rows || c != parseInt(c) || c < 0 || c >= _.arg.cols) return;
 
-str=str.replace(/\\([0-9A-F]{1,2})/g, (_, m)=>{
-    return String.fromCharCode(hex2dec(m))
-});
+            str = str.replace(/\\([0-9A-F]{1,2})/g, (_, m) => {
+                return String.fromCharCode(hex2dec(m))
+            });
+
             var i, k, x;
             for (i = 0; i < str.length; i++) {
                 if (str[i] == '\n') {
                     while (c < _.arg.cols)
-                        char(_, r, c++, " ");
+                        set(_, r, c++, []);
                     c = 0;
                     if (r++ >= _.arg.rows) return;
                 }
@@ -114,9 +115,9 @@ str=str.replace(/\\([0-9A-F]{1,2})/g, (_, m)=>{
             while (r < _.arg.rows) {
                 if (c > _.arg.cols) {
                     c = 0;
-                    char(_, ++r, c, " ");
+                    set(_, ++r, c, []);
                 } else
-                    char(_, r, c++, " ");
+                    set(_, r, c++, []);
             }
         }
 
@@ -127,7 +128,7 @@ str=str.replace(/\\([0-9A-F]{1,2})/g, (_, m)=>{
 
         var getSymbolByIndex = (_, x, custom) => {
             if (!_.font[x] && custom) return null;
-            return _.font[x] ? _.font[x] : cpList[_.rom].font[x];
+            return _.font[x] ? _.font[x].slice() : cpList[_.rom].font[x];
         }
 
         var _ = {
@@ -198,14 +199,14 @@ str=str.replace(/\\([0-9A-F]{1,2})/g, (_, m)=>{
         this.font = (n, data) => { font(_, n, data); };
         this.getSymbolByIndex = (index, custom = false) => { return getSymbolByIndex(_, index, custom); };
         this.param = {
-            get font() { return _.font; },
-            set font(f) { _.font = f },
+            get font() { return _.font.slice(); },
+            set font(f) { _.font = f.slice() },
         };
     }
 }
 
 /* Codepage tables */
-var _jp = {
+const _jp = {
     name: "Japan",
     font: [
         [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [],
@@ -459,7 +460,7 @@ var _jp = {
     }
 };
 
-var _eu = {
+const _eu = {
     name: "Eng",
     font: [
         [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [],
@@ -732,7 +733,7 @@ var _eu = {
     }
 };
 
-var _ru = {
+const _ru = {
     name: "Rus",
     font: [
         [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [],
@@ -1023,7 +1024,7 @@ var _ru = {
     }
 };
 
-var _patterns = {
+const _patterns = {
     name: "Patterns",
     font: [
         [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [],
@@ -1235,7 +1236,7 @@ var _patterns = {
 
 
 /* Codepage list */
-var cpList = {
+const cpList = {
     "jp": _jp,
     "eu": _eu,
     "ru": _ru,

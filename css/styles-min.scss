@@ -137,16 +137,15 @@ span.l {
     ul {
         cursor: pointer;
         position: absolute;
-        margin: 0 0 0 -1px;
+        margin: 0;
         padding: 1px;
         border: 1px solid rgba(0, 0, 0, 0);
     }
     i {
-        margin-left: 1px;
-        margin-top: 1px;
+        margin: 1px 0 0 1px;
         position: absolute;
         padding: 0px;
-        display: inline-block;
+        display: block;
     }
     &:hover {
         .border {
@@ -171,6 +170,7 @@ span.l {
     display: inline-block;
     background: #000;
     padding: 10px 10px 20px 10px;
+    // margin: 5px;
     border-radius: 5px;
 }
 
@@ -456,8 +456,36 @@ input {
     }
 }
 
-.lcd_green{
-   color: #252525
+    //panel colors
+div.colors_box {
+    div.lcd_green {
+        div {
+            background-color: #143;
+        }
+        background-color: #a5dd22;
+    }
+
+    div.lcd_blue {
+        div {
+            background-color: #fe8;
+        } 
+        background-color: #00009d;
+    }
+
+    div.lcd_white {
+        div {
+            background-color: #143;
+        }
+        background-color: #d5d9e0;
+    }
+    
+    div{
+        display: block;
+        align-items: center;
+    } 
+    vertical-align: center;
+    align-items: center;
+    padding: 15px;
 }
 
 //текстовое поле с выпадающим списоком с подсказками

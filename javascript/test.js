@@ -208,6 +208,7 @@ var addPanel = (config) => {
             show_hover_grid: $('show_hover_grid').checked ? 1 : 0,
             large: $('lcd_large').checked,
             border: $('lcd_border').checked,
+            custom_font: CustomSymbolsPanel.param.font,
             content: ""
         }
     }
@@ -217,8 +218,6 @@ var addPanel = (config) => {
     newPanel.id = "lcd_" + config.id;
     newPanel.innerHTML = $("panel_template").innerHTML.replace("{text}", config.content).replace("{PanelName}", config.name).replace(/{id}/g, config.id);
     $("panels").appendChild(newPanel);
-
-    config.custom_font = CustomSymbolsPanel.param.font;
 
     panels_config[config.id] = config;
     createNewPanel(config);
@@ -238,7 +237,6 @@ var updatePanel = (p) => {
     let val = p.value;
 
     panels_config[id].content = val;
-
     panels_obj[id].text(0, 0, val);
 }
 
@@ -262,8 +260,8 @@ var copyPanelConfig = (type, el) => {
         copiedPanelConfig = {
             custom_font: CustomSymbolsPanel.param.font
         };
-        ToolTip("Custom symbol saved at inner variable", "green");
-    } else if (type == "config") {
+        ToolTip("Custom symbols saved at inner variable", "green");
+    } else if (type == "panel") {
         copiedPanelConfig = panels_config[getPanelIndex(el)];
         ToolTip("Panel config saved at inner variable.<br />Past it to other panel config or gloabal settings page", "green");
     }
@@ -296,36 +294,48 @@ var pastPanelConfig = (type, el, data) => {
                 });
             }
         }
-        if (copiedPanelConfig.custom_font) {
-            CustomSymbolsPanel.param.font = copiedPanelConfig.custom_font;
-        }
-        else if (data) {
+
+        if (data) {
             updateCustomMatrix(data);
-        } else {
-            if (!symbol_code && init_complite) {
-                ToolTip("Error: empty symbol code", "red");
-                return;
-            }
+        }
+        else if (copiedPanelConfig.custom_font) {
+            CustomSymbolsPanel.param.font = copiedPanelConfig.custom_font.slice();
+            copiedPanelConfig.custom_font = null;
+            if (symbol_code instanceof Array)
+                updateCustomMatrix(symbol_code);
+        }
+        else if (symbol_code instanceof Array) {
             updateCustomMatrix(symbol_code);
+        } else if (init_complite) {
+            ToolTip("Error: empty symbol code", "red");
+            return;
         }
 
         updateCustomSymb();
     } else if (type == "panel") {
-        if (typeof copiedPanelConfig.rom != 'string') {
-            ToolTip("Error: empty config", "red");
-            return;
-        }
         let id = getPanelIndex(el);
-        copiedPanelConfig.id = id;
-        copiedPanelConfig.at = "panel_" + id;
-        copiedPanelConfig.content = panels_config[id].content;
-        copiedPanelConfig.custom_font = CustomSymbolsPanel.param.font;
-        if (!copiedPanelConfig.name) copiedPanelConfig.name = panels_config[id].name;
-        panels_config[id] = copiedPanelConfig;
-        createNewPanel(copiedPanelConfig);
-        setPanelInfoText(copiedPanelConfig);
+        let fnt = copiedPanelConfig.custom_font;
+        if (fnt instanceof Array) {//copy custom font
+            copiedPanelConfig = panels_config[id];
+            copiedPanelConfig.custom_font = fnt.slice();
+            panels_config[id].custom_font = fnt.slice();
+            createNewPanel(copiedPanelConfig);
+            setPanelInfoText(copiedPanelConfig);
+            ToolTip("Panel custom symbols replaced with saved", "yellow");
+        } else if (typeof copiedPanelConfig.rom != 'string') {
+            ToolTip("Error: empty config", "red");
+        } else if (copiedPanelConfig) {
+            copiedPanelConfig.id = id;
+            copiedPanelConfig.at = "panel_" + id;
+            copiedPanelConfig.content = panels_config[id].content;
+            copiedPanelConfig.custom_font = panels_config[id].custom_font;
+            if (!copiedPanelConfig.name) copiedPanelConfig.name = panels_config[id].name;
+            panels_config[id] = copiedPanelConfig;
+            createNewPanel(copiedPanelConfig);
+            setPanelInfoText(copiedPanelConfig);
 
-        ToolTip("Panel config replaced with saved", "yellow");
+            ToolTip("Panel config replaced with saved", "yellow");
+        }
     }
 }
 
@@ -340,7 +350,7 @@ var editPanelName = (el) => {
 var renamePanel = (el) => {
     let id = getPanelIndex(el);
     let val = el.value;
-    el.parentNode.innerHTML = '<h3 id="panel_name_' + id + '" onclick="editPanelName(this, ' + id + ')">' + val + '</h3>';
+    el.parentNode.innerHTML = '<h2 id="panel_name_' + id + '" onclick="editPanelName(this, ' + id + ')">' + val + '</h2>';
     panels_config[id].name = val;
 }
 
@@ -682,9 +692,9 @@ var dec2hex = (dec) => {
     return dec.toString(16);
 }
 
-var hex2dec = (hex) =>{
-    if(hex.length % 2) hex='0'+hex;
-    return BigInt('0x'+hex).toString(10);
+var hex2dec = (hex) => {
+    if (hex.length % 2) hex = '0' + hex;
+    return BigInt('0x' + hex).toString(10);
 }
 
 window.addEventListener('DOMContentLoaded', () => {
