@@ -106,28 +106,28 @@ var selMenu = (id) => {
 var initSwipes = () => {
     let touchstartX = 0
     let touchendX = 0
+    const tolerance = 50;
 
     var swipeMenu = (dir) => {
-        let curIndex = menuItems.indexOf(selectedMenu);
-        curIndex += dir; 
+        let curIndex = menuItems.indexOf(selectedMenu) + dir;
         if (curIndex < 0) curIndex = menuItems.length - 1;
         else if (curIndex > menuItems.length - 1) curIndex = 0;
         selMenu(menuItems[curIndex]);
     }
 
     var checkDirection = () => {
-        if (touchendX < touchstartX)
+        if (touchendX < touchstartX - tolerance)
             swipeMenu(+1);
-        else if (touchendX > touchstartX)
+        else if (touchendX > touchstartX + tolerance)
             swipeMenu(-1);
     }
 
     document.addEventListener('touchstart', e => {
-        touchstartX = e.changedTouches[0].screenX
+        touchstartX = e.changedTouches[0].screenX;
     })
 
     document.addEventListener('touchend', e => {
-        touchendX = e.changedTouches[0].screenX
+        touchendX = e.changedTouches[0].screenX;
         checkDirection()
     })
 }
