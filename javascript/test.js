@@ -115,20 +115,16 @@ var initSwipes = () => {
         selMenu(menuItems[curIndex]);
     }
 
-    var checkDirection = () => {
-        if (touchendX < touchstartX - tolerance)
-            swipeMenu(+1);
-        else if (touchendX > touchstartX + tolerance)
-            swipeMenu(-1);
-    }
-
     document.addEventListener('touchstart', e => {
         touchstartX = e.changedTouches[0].screenX;
     })
 
     document.addEventListener('touchend', e => {
         touchendX = e.changedTouches[0].screenX;
-        checkDirection()
+        if (touchendX < touchstartX - tolerance)
+            swipeMenu(+1);
+        else if (touchendX > touchstartX + tolerance)
+            swipeMenu(-1);
     })
 }
 
