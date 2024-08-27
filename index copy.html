@@ -167,17 +167,14 @@ LiquidCrystal lcd(rs, en, d4, d5, d6, d7);{/parallel_bus}{I2C_bus}#include &lt;L
 
 //1-wire bus--------->address 
 LiquidCrystal_I2C lcd(0x3F, {columns}, {rows});{/I2C_bus}
-const uint8_t char_map[8][8] PROGMEM = {{customCharArrays}
-    {{symbol_data}},{/customCharArrays}
-}
+{customCharArrays}
+const uint8_t customChar{char_index}[8] PROGMEM = { {symbol_data}};{/customCharArrays}
 
 void setup() {
     {I2C_bus}lcd.init();{/I2C_bus}{parallel_bus}lcd.begin({columns}, {rows});{/parallel_bus}
-    for (uint8_t i = 0; i &lt; 8; i++) {
-        lcd.createChar(i, (char*)char_map[i]);
-    }
-    lcd.home();
-    for (uint8_t i = 0; i &lt; 8; i++) {
+    {loadChar}lcd.createChar({char_index}, customChar{char_index});
+    {/loadChar}lcd.home();
+    for (uint8_t i = 0; i &lt; {chars_count}; i++) {
         lcd.write(i);
     }
 }

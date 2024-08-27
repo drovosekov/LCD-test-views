@@ -608,7 +608,8 @@ var updateCustomSymb = () => {
     let fullCode = $('code_gen').checked;
     let charsArray = "";
     let loadCharArray = "";
-    const charsArrayTmpl = /(?<={customCharArrays})(.|\n)*(?={\/customCharArrays})/g.exec(code)[0]; 
+    const charsArrayTmpl = /(?<={customCharArrays})(.|\n)*(?={\/customCharArrays})/g.exec(code)[0];
+    const loadArrayTmpl = /(?<={loadChar})(.|\n)*(?={\/loadChar})/g.exec(code)[0];
     let i = 0;
     let dType = $('symbols_data_type').value;
     CustomSymbolsPanel.param.font.forEach(f => {
@@ -619,12 +620,15 @@ var updateCustomSymb = () => {
                 else if (dType == "hex") ff[u] = "0x" + dec2hex(f[u]);
                 else ff[u] = f[u];//decimal by default format
             };
-            let sym = JSON.stringify(ff).replace(/(\[|\]|\")/g, ""); 
+            let sym = JSON.stringify(ff).replace(/(\[|\]|\")/g, "");
+            let chrD = charsArrayTmpl.replace("{char_index}", i);
             if (dType == "bin") {
-                charsArray += charsArrayTmpl.replace("{symbol_data}", "\n\t\t\t" + sym.replace(/,/g, ",\n\t\t\t") + "\n");
+                charsArray += chrD.replace("{symbol_data}", "\n\t\t\t" + sym.replace(/,/g, ",\n\t\t\t") + "\n");
             } else {
-                charsArray += charsArrayTmpl.replace("{symbol_data}", sym);
-            } 
+                charsArray += chrD.replace("{symbol_data}", sym + " ");
+            }
+            if (fullCode)
+                loadCharArray += loadArrayTmpl.replace(/{char_index}/g, i);
             i++;
         }
     });
@@ -636,7 +640,8 @@ var updateCustomSymb = () => {
             code = code.replace(/{I2C_bus}(.|\n)*?{\/I2C_bus}/g, "").replace(/({parallel_bus}|{\/parallel_bus})/g, "");
         else
             code = code.replace(/{parallel_bus}(.|\n)*?{\/parallel_bus}/g, "").replace(/({I2C_bus}|{\/I2C_bus})/g, "");
- 
+
+        code = code.replace("{chars_count}", i);
         code = code.replace(/({loadChar}(.|\n)*{\/loadChar})/g, loadCharArray);
         code = code.replace(/({customCharArrays}(.|\n)*{\/customCharArrays})/g, charsArray);
     } else
